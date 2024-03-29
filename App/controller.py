@@ -69,11 +69,13 @@ def get_data(control, id):
     pass
 
 
-def req_1(control):
+def req_1(control, n_ofertas, cod_pais, xp):
     """
     Retorna el resultado del requerimiento 1
     """
     # TODO: Modificar el requerimiento 1
+    final, cant_xp, cant_of_pais = model.req_1(control, n_ofertas, cod_pais, xp)
+    return final, cant_xp, cant_of_pais
     pass
 
 
@@ -90,6 +92,8 @@ def req_3(control):
     Retorna el resultado del requerimiento 3
     """
     # TODO: Modificar el requerimiento 3
+    final = model.req_3(control, nom_empresa, fecha_inicial_consulta, fecha_final_consulta)
+
     pass
 
 
@@ -98,6 +102,8 @@ def req_4(control):
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
+    final = model.req_4(control, cod_pais, fecha_inicial_consulta, fecha_final_consulta)
+    
     pass
 
 
@@ -169,3 +175,7 @@ def delta_memory(stop_memory, start_memory):
     # de Byte -> kByte
     delta_memory = delta_memory/1024.0
     return delta_memory
+
+
+
+csv.field_size_limit(2147483647)
