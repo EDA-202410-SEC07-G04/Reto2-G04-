@@ -169,3 +169,6 @@ def delta_memory(stop_memory, start_memory):
     # de Byte -> kByte
     delta_memory = delta_memory/1024.0
     return delta_memory
+
+
+csv.field_size_limit(2147483647)
