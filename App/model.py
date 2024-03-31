@@ -157,6 +157,7 @@ def req_1(data_structs, n_ofertas, cod_pais, xp):
     cant_xp = 0
     cant_of_pais = 0
     for i in range(1, mp.size(data_structs["jobs"])+1): 
+        ele = mp.get(data_structs["jobs"], i)
         if cod_pais.lower() == data_structs["jobs"]:
             lt.addFirst(lt1, data_structs)
             if xp == data_structs:
