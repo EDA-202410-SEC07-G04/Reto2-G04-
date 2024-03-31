@@ -177,5 +177,4 @@ def delta_memory(stop_memory, start_memory):
     return delta_memory
 
 
-
 csv.field_size_limit(2147483647)

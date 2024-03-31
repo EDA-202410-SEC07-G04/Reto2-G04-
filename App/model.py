@@ -44,7 +44,7 @@ dos listas, una para los videos, otra para las categorias de los mismos.
 """
 
 # Construccion de modelos
-
+data_struct = None
 
 def new_data_structs():
     """
@@ -52,8 +52,27 @@ def new_data_structs():
     manera vacía para posteriormente almacenar la información.
     """
     #TODO: Inicializar las estructuras de datos
-    pass
 
+    catalog = {'info': None,
+               'jobs': None,
+               'multilocations': None,
+               'skills': None}
+
+    catalog['jobs'] = mp.newMap(203562,
+                                   maptype='CHAINING',
+                                   loadfactor=0.99)
+    catalog['info'] = mp.newMap(259837,
+                                maptype='CHAINING',
+                                loadfactor=1)
+    catalog['multilocations'] = mp.newMap(244937,
+                                          maptype='CHAINING',
+                                          loadfactor=0.99)
+    
+    catalog['skills'] = mp.newMap(577166,
+                                  maptype='CHAINING',
+                                  loadfactor=0.99)
+    
+    return catalog
 
 # Funciones para agregar informacion al modelo
 
