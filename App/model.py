@@ -112,11 +112,41 @@ def data_size(data_structs):
     pass
 
 
-def req_1(data_structs):
+def req_1(data_structs, n_ofertas, cod_pais, xp):
     """
     Función que soluciona el requerimiento 1
     """
     # TODO: Realizar el requerimiento 1
+    lt1 = lt.newList("ARRAY_LIST")
+    lt2 = lt.newList("ARRAY_LIST")
+    cant_xp = 0
+    cant_of_pais = 0
+    for i in data_structs: 
+        if cod_pais.lower() == data_structs:
+            lt.addFirst(lt1, data_structs)
+            if xp == data_structs:
+                lt.addLast(lt2, data_structs)
+
+    
+    if lt.size(lt2) == 0:
+        print("Ningun resultado encontrado")
+        sys.exit(0)
+    elif n_ofertas > lt.size(lt2):
+        n_ofertas = lt.size(lt2)
+    elif n_ofertas <= lt.size(lt2):
+        n_ofertas = n_ofertas 
+
+    final = lt.subList(lt2, 0, n_ofertas)
+
+    for x in lt.iterator(lt2):
+        cant_xp += 1
+
+    for j in lt.iterator(lt1):
+        cant_of_pais += 1
+
+    
+    return final, cant_xp, cant_of_pais
+
     pass
 
 
@@ -128,19 +158,58 @@ def req_2(data_structs):
     pass
 
 
-def req_3(data_structs):
+def req_3(data_structs, nom_empresa, fecha_inicial_consulta, fecha_final_consulta):
     """
     Función que soluciona el requerimiento 3
     """
     # TODO: Realizar el requerimiento 3
+    fecha_inicial_dt = str(dt.strptime(fecha_inicial_consulta, "%Y-%m-%d"))
+    fecha_final_dt = str(dt.strptime(fecha_final_consulta, "%Y-%m-%d"))
+    chili = lt.newList("ARRAY_LIST")
+    for i in range(1, data_structs):
+        fecha_diccionario = dt.strptime(lt.getElement(data_structs["jobs"], i)["published_at"], '%Y-%m-%dT%H:%M:%S.%fZ')
+        fecha_diccionario_dt = fecha_diccionario.strftime("%Y-%m-%d")
+        if nom_empresa.lower() == data_structs:
+            if fecha_inicial_dt <= fecha_diccionario_dt and fecha_diccionario_dt <= fecha_final_dt:
+                lt.addLast(chili, i)
+                if lt.size(chili) >= 2:
+                    sortiao = merg.sort(chili, sort_r3)
+                elif lt.size(chili) <= 1:
+                    sortiao = chili 
+
+    if lt.isEmpty(chili):
+        print("Ningun resultado encontrado")
+        sys.exit(0)
+
+    return sortiao
+
     pass
 
 
-def req_4(data_structs):
+def req_4(data_structs, cod_pais, fecha_inicial_consulta, fecha_final_consulta):
     """
     Función que soluciona el requerimiento 4
     """
     # TODO: Realizar el requerimiento 4
+    chili = lt.newList("ARRAY_LIST")
+    fecha_inicial_dt = str(dt.strptime(fecha_inicial_consulta, "%Y-%m-%d"))
+    fecha_final_dt = str(dt.strptime(fecha_final_consulta, "%Y-%m-%d")) 
+    for i in range(1, data_structs):
+        fecha_diccionario = dt.strptime(lt.getElement(data_structs["jobs"], i)["published_at"], '%Y-%m-%dT%H:%M:%S.%fZ')
+        fecha_diccionario_dt = fecha_diccionario.strftime("%Y-%m-%d")
+        if i["country_code"] == cod_pais: 
+            if fecha_inicial_dt <= fecha_diccionario_dt and fecha_diccionario_dt <= fecha_final_dt:
+                lt.addLast(chili, i)
+                if lt.size(chili) >= 2:
+                    sortiao = merg.sort(chili, sort_r3)
+                elif lt.size(chili) <= 1:
+                    sortiao = chili 
+
+    if lt.isEmpty(chili):
+        print("Ningun resultado encontrado")
+        sys.exit(0)
+    
+    return sortiao 
     pass
 
 
@@ -207,4 +276,8 @@ def sort(data_structs):
     Función encargada de ordenar la lista con los datos
     """
     #TODO: Crear función de ordenamiento
+    pass
+
+
+def sort_r3():
     pass

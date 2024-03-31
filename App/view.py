@@ -29,7 +29,7 @@ from DISClib.ADT import queue as qu
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 assert cf
-from tabulate import tabulate
+#from tabulate import tabulate
 import traceback
 
 """
@@ -86,6 +86,39 @@ def print_req_1(control):
         Función que imprime la solución del Requerimiento 1 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 1
+    n_ofertas = int(input("Digame la cantidad de ofertas que desea ver: "))
+    cod_pais = str(input("Digame el pais del cual desea consultar ofertas: "))
+    xp = str(input("Digame el nivel de experiencia que le interesa: "))
+    final, cant_xp, cant_of_pais = controller.req_1(control, n_ofertas, cod_pais, xp)
+    print("El total de ofertas en ese pais: " + str(cant_of_pais))
+    print("El total de ofertas por el nivel de experiencia en ese pais: " + str(cant_xp))
+    size = lt.size(final)    
+    sample = size
+    if size == 1:
+        job = lt.getElement(final, 0)
+        print("Los", size, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  
+            ' Nombre de la compañia: ' + job['company_name'] + ' Nivel de XP: ' + job['experience_level'] + " Pais: " + job["country_code"] + ' Ciudad: ' + 
+            job['city'] + " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + 
+            ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
+    elif size <= sample*2:
+        print("Los", size, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        for job in lt.iterator(final):
+            print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  
+            ' Nombre de la compañia: ' + job['company_name'] + ' Nivel de XP: ' + job['experience_level'] + " Pais: " + job["country_code"] + ' Ciudad: ' + 
+            job['city'] + " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + 
+            ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
+    else:
+        print("Los", sample, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        i = 1
+        while i <= sample:
+            job = lt.getElement(final, i)
+            print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  
+            ' Nombre de la compañia: ' + job['company_name'] + ' Nivel de XP: ' + job['experience_level'] + " Pais: " + job["country_code"] + ' Ciudad: ' + 
+            job['city'] + " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + 
+            ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
+            i += 1
+
     pass
 
 
@@ -102,6 +135,9 @@ def print_req_3(control):
         Función que imprime la solución del Requerimiento 3 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 3
+    nom_empresa = str(input("Digame el nombre de la empresa: "))
+    fecha_inicial_consulta =  str(input("Que fecha minima le interesa?: "))
+    fecha_final_consulta = str(input("Que fecha maxima le interesa?: "))
     pass
 
 
@@ -110,6 +146,10 @@ def print_req_4(control):
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
+    cod_pais = str(input("Digame el pais del cual desea consultar ofertas: "))
+    fecha_inicial_consulta =  str(input("Que fecha minima le interesa?: "))
+    fecha_final_consulta = str(input("Que fecha maxima le interesa?: "))
+
     pass
 
 
@@ -153,6 +193,8 @@ if __name__ == "__main__":
     """
     Menu principal
     """
+    default_limit = 1000
+    sys.setrecursionlimit(default_limit*10)
     working = True
     #ciclo del menu
     while working:
