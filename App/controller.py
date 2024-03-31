@@ -36,20 +36,36 @@ def new_controller():
     Crea una instancia del modelo
     """
     #TODO: Llamar la función del modelo que crea las estructuras de datos
-    pass
+    control = {
+        "model": None
+    }
+    control["model"] = model.new_data_structs()
+    return control
 
 
 # Funciones para la carga de datos
 
-def load_data(control, filename):
+def load_data(control):
     """
     Carga los datos del reto
     """
     # TODO: Realizar la carga de datos
-    pass
+    control = control["model"]
+    size, jobs = load_jobs(control)
+    return size, jobs
 
-
+def subi():
+    sub1, sub2 = model.get_subi(control["model"])
+    return sub1, sub2
 # Funciones de ordenamiento
+
+def load_jobs(control):
+    jobsfile = cf.data_dir + 'large-jobs.csv'
+    input_file = csv.DictReader(open(jobsfile, encoding='utf-8'), delimiter=';')
+    for job in input_file:
+        model.addJob(control, job)
+    return model.jobSize(control), model.jobComplete(control)
+
 
 def sort(control):
     """
@@ -175,7 +191,6 @@ def delta_memory(stop_memory, start_memory):
     # de Byte -> kByte
     delta_memory = delta_memory/1024.0
     return delta_memory
-
 
 
 csv.field_size_limit(2147483647)

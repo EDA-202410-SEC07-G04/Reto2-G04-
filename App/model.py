@@ -44,7 +44,7 @@ dos listas, una para los videos, otra para las categorias de los mismos.
 """
 
 # Construccion de modelos
-
+data_struct = None
 
 def new_data_structs():
     """
@@ -52,8 +52,28 @@ def new_data_structs():
     manera vacía para posteriormente almacenar la información.
     """
     #TODO: Inicializar las estructuras de datos
-    pass
 
+    catalog = {'info': None,
+               'jobs': None,
+               'multilocations': None,
+               'skills': None}
+
+    catalog['jobs'] = mp.newMap(203562,
+                                   maptype='CHAINING',
+                                   loadfactor=0.99)
+    """
+    catalog['info'] = mp.newMap(259837,
+                                maptype='CHAINING',
+                                loadfactor=1)
+    catalog['multilocations'] = mp.newMap(244937,
+                                          maptype='CHAINING',
+                                          loadfactor=0.99)
+    
+    catalog['skills'] = mp.newMap(577166,
+                                  maptype='CHAINING',
+                                  loadfactor=0.99)
+    """
+    return catalog
 
 # Funciones para agregar informacion al modelo
 
@@ -64,6 +84,30 @@ def add_data(data_structs, data):
     #TODO: Crear la función para agregar elementos a una lista
     pass
 
+def newId(pubid):
+    entry = {'ide': "", "jobs": None}
+    entry["ide"] = pubid
+    entry["jobs"] = lt.newList("SINGLE_LINKED", compareDate)
+    return entry
+
+def addJob(catalog, job):
+    try:
+        jobs = catalog['jobs']
+        if (job['id'] != ''):
+            pubid = job['id']
+            pubid = str(pubid)
+        else:
+            pubid = " "
+        existid = mp.contains(jobs, pubid)
+        if existid:
+            entry = mp.get(jobs, pubid)
+            ide = me.getValue(entry)
+        else:
+            ide = newId(pubid)
+            mp.put(jobs, pubid, ide)
+        lt.addLast(ide['jobs'], job)
+    except Exception:
+        return None
 
 # Funciones para creacion de datos
 
@@ -92,6 +136,16 @@ def data_size(data_structs):
     #TODO: Crear la función para obtener el tamaño de una lista
     pass
 
+def get_subi(data_structs):
+    
+    pass
+
+def jobComplete(data_structs):
+    return data_structs["jobs"]
+
+def jobSize(data_structs):
+    return mp.size(data_structs["jobs"])
+
 
 def req_1(data_structs, n_ofertas, cod_pais, xp):
     """
@@ -102,8 +156,8 @@ def req_1(data_structs, n_ofertas, cod_pais, xp):
     lt2 = lt.newList("ARRAY_LIST")
     cant_xp = 0
     cant_of_pais = 0
-    for i in data_structs: 
-        if cod_pais.lower() == data_structs:
+    for i in range(1, mp.size(data_structs["jobs"])+1): 
+        if cod_pais.lower() == data_structs["jobs"]:
             lt.addFirst(lt1, data_structs)
             if xp == data_structs:
                 lt.addLast(lt2, data_structs)
@@ -261,4 +315,7 @@ def sort(data_structs):
 
 
 def sort_r3():
+    pass
+
+def compareDate():
     pass

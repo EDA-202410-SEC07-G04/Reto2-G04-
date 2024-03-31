@@ -39,13 +39,18 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
+default_limit = 1000
+
+sys.setrecursionlimit(default_limit*10)
+
 
 def new_controller():
     """
         Se crea una instancia del controlador
     """
     #TODO: Llamar la función del controlador donde se crean las estructuras de datos
-    pass
+    control = controller.new_controller()
+    return control
 
 
 def print_menu():
@@ -67,7 +72,10 @@ def load_data(control):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    pass
+    size, jobs = controller.load_data(control)
+    #lista = controller.subi(control)
+    print(jobs)
+    return size, jobs
 
 
 def print_data(control, id):
