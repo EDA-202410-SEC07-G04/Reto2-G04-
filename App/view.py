@@ -23,6 +23,7 @@
 import config as cf
 import sys
 import controller
+from collections import Counter
 from DISClib.ADT import list as lt
 from DISClib.ADT import stack as st
 from DISClib.ADT import queue as qu
@@ -194,7 +195,53 @@ def print_req_5(control):
         Función que imprime la solución del Requerimiento 5 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 5
-    pass
+    cant_empresas_una_oferta = []
+    empresas = []
+    messi = lt.newList("ARRAY_LIST")
+    mes = 0
+    nom_ciudad = str(input("Digame el nombre de la ciudad: "))
+    fecha_inicial_consulta =  str(input("Que fecha minima le interesa?: "))
+    fecha_final_consulta = str(input("Que fecha maxima le interesa?: "))
+
+    final, cantidad = controller.req_5(control, nom_ciudad.lower(), fecha_inicial_consulta, fecha_final_consulta)
+    for i in lt.iterator(final):
+        empresas.append(i["company_name"])
+        if lt.isPresent(messi, i["company_name"]) == 0:
+            lt.addLast(messi, i["company_name"])
+        else:
+            mes += 1
+
+    tot_emp = lt.size(messi)
+
+    contador = Counter(empresas)
+    elemento_mayor, frecuencia_mayor = contador.most_common(1)[0]    
+    elemento_menor, frecuencia_menor = contador.most_common()[-1]
+
+    print("            ")
+    print("Numero total de ofertas: " + str(cantidad))
+    print("Numero de empresas que publicaron al menos una oferta: " + str(tot_emp))
+    print("Empresa con mayor número de ofertas: " + str(elemento_mayor) + " número de empleos " + str(frecuencia_mayor))
+    print("Empresa con menor número de ofertas: " + str(elemento_menor) + " número de empleos " + str(frecuencia_menor))
+    size = lt.size(final)    
+    sample = size
+    if size == 1:
+        job = lt.getElement(final, 0)
+        print("Los", size, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  ' Nombre de la compañia: ' + job['company_name'] +
+            " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'])
+    elif size <= sample*2:
+        print("Los", size, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        for job in lt.iterator(final):
+            print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  ' Nombre de la compañia: ' + job['company_name'] +
+            " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'])
+    else:
+        print("Los", sample, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        i = 1
+        while i <= sample:
+            job = lt.getElement(final, i)
+            print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  ' Nombre de la compañia: ' + job['company_name'] +
+            " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'])
+            i += 1
 
 
 def print_req_6(control):

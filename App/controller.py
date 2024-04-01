@@ -66,6 +66,7 @@ def load_jobs(control):
         model.addJob(control['model'], job)
         model.addCountrycode(control['model'], job)
         model.addCompanyname(control['model'], job)
+        model.addCityname(control['model'], job)
     #return model.jobSize(control), model.jobComplete(control)
 
 def sort(control):
@@ -123,12 +124,13 @@ def req_4(control):
     pass
 
 
-def req_5(control):
+def req_5(control, ciudad, fecha_inicial_consulta, fecha_final_consulta):
     """
     Retorna el resultado del requerimiento 5
     """
     # TODO: Modificar el requerimiento 5
-    pass
+    final, cantidad = model.req_5(control["model"], ciudad, fecha_inicial_consulta, fecha_final_consulta)
+    return final, cantidad
 
 def req_6(control):
     """

@@ -71,6 +71,10 @@ def new_data_structs():
     catalog['companies'] = mp.newMap(203562,
                                    maptype='CHAINING',
                                    loadfactor=0.99)
+
+    catalog['cities'] = mp.newMap(203562,
+                                   maptype='CHAINING',
+                                   loadfactor=0.99)
     """
     catalog['info'] = mp.newMap(259837,
                                 maptype='CHAINING',
@@ -170,6 +174,30 @@ def addCompanyname(catalog, job):
     except Exception:
         return None
 
+def newCityname(pubcity):
+    entry = {'cityname': "", "jobs": None}
+    entry["cityname"] = pubcity
+    entry["jobs"] = lt.newList("SINGLE_LINKED")
+    return entry
+
+def addCityname(catalog, job):
+    try:
+        jobs = catalog['cities']
+        if (job['city'] != ''):
+            pubcity = job['city'].lower()
+            pubcity = str(pubcity.lower())
+        else:
+            pubcity = " "
+        existid = mp.contains(jobs, pubcity.lower())
+        if existid:
+            entry = mp.get(jobs, pubcity.lower())
+            Cname = me.getValue(entry)
+        else:
+            Cname = newCityname(pubcity.lower())
+            mp.put(jobs, pubcity.lower(), Cname)
+        lt.addLast(Cname['jobs'], job)
+    except Exception:
+        return None
 # Funciones para creacion de datos
 
 def new_data(id, info):
@@ -313,12 +341,40 @@ def req_4(data_structs, cod_pais, fecha_inicial_consulta, fecha_final_consulta):
     pass
 
 
-def req_5(data_structs):
+def req_5(data_structs, ciudad, fecha_inicial_consulta, fecha_final_consulta):
     """
     Función que soluciona el requerimiento 5
     """
     # TODO: Realizar el requerimiento 5
-    pass
+    fecha_inicial_dt = str(dt.strptime(fecha_inicial_consulta, "%Y-%m-%d"))
+    fecha_final_dt = str(dt.strptime(fecha_final_consulta, "%Y-%m-%d"))
+    lttot = lt.newList("ARRAY_LIST")
+    ltm = lt.newList("ARRAY_LIST")
+    ltsr = lt.newList("ARRAY_LIST")
+    chili = lt.newList("ARRAY_LIST")
+    
+    city = mp.get(data_structs['cities'], ciudad)
+    #print(city)
+    if city:
+        var1 = me.getValue(city)['jobs']
+        for i in lt.iterator(var1):
+            fecha_diccionario = dt.strptime(i["published_at"], '%Y-%m-%dT%H:%M:%S.%fZ')
+            fecha_diccionario_dt = fecha_diccionario.strftime("%Y-%m-%d")
+            if fecha_inicial_dt <= fecha_diccionario_dt and fecha_diccionario_dt <= fecha_final_dt:
+                lt.addLast(chili, i)
+    
+    tot_of = lt.size(chili)
+
+    if lt.size(chili) >= 2:
+        sortiao = merg.sort(chili, sort_r3)
+    elif lt.size(chili) <= 1:
+        sortiao = chili 
+
+    if lt.isEmpty(chili):
+        print("Ningun resultado encontrado")
+        sys.exit(0)
+
+    return sortiao, tot_of
 
 
 def req_6(data_structs):
