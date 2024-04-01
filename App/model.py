@@ -176,18 +176,13 @@ def req_1(data_structs, n_ofertas, cod_pais, xp):
     """
     # TODO: Realizar el requerimiento 1
     lt1 = lt.newList("ARRAY_LIST")
-    #print(data_structs["jobs"])
     country = mp.get(data_structs['countries'], cod_pais)
     if country:
         var1 = me.getValue(country)['jobs']
         cant_of_pais = mp.size(var1)
-        #print(var1)
-
-        #print(lt.getElement(var1, 0))
         for i in lt.iterator(var1):
             if xp.lower() == i["experience_level"].lower():
                 lt.addLast(lt1, i)
-
     
     if lt.size(lt1) == 0:
         print("Ningun resultado encontrado")
@@ -199,15 +194,9 @@ def req_1(data_structs, n_ofertas, cod_pais, xp):
 
     final = lt.subList(lt1, 0, n_ofertas)
 
-    
     cant_xp = lt.size(lt1)
 
-    
-
-    
     return final, cant_xp, cant_of_pais
-
-    pass
 
 
 def req_2(data_structs):
