@@ -65,13 +65,8 @@ def load_jobs(control):
     for job in input_file:
         model.addJob(control['model'], job)
         model.addCountrycode(control['model'], job)
+        model.addCompanyname(control['model'], job)
     #return model.jobSize(control), model.jobComplete(control)
-
-def load_jobs2(control):
-    jobsfile = cf.data_dir + 'large-jobs.csv'
-    input_file = csv.DictReader(open(jobsfile, encoding='utf-8'), delimiter=';')
-    for job in input_file:
-        model.addCountrycode(control['model'], job)
 
 def sort(control):
     """
@@ -109,14 +104,13 @@ def req_2(control):
     pass
 
 
-def req_3(control):
+def req_3(control, nom_empresa, fecha_inicial_consulta, fecha_final_consulta):
     """
     Retorna el resultado del requerimiento 3
     """
     # TODO: Modificar el requerimiento 3
-    final = model.req_3(control["model"], nom_empresa, fecha_inicial_consulta, fecha_final_consulta)
-
-    pass
+    sortiao, cant_of, cant_xp_jr, cant_xp_m, cant_xp_sr = model.req_3(control["model"], nom_empresa, fecha_inicial_consulta, fecha_final_consulta)
+    return sortiao, cant_of, cant_xp_jr, cant_xp_m, cant_xp_sr
 
 
 def req_4(control):

@@ -36,6 +36,8 @@ from DISClib.Algorithms.Sorting import insertionsort as ins
 from DISClib.Algorithms.Sorting import selectionsort as se
 from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
+from datetime import datetime as dt
+import sys
 assert cf
 
 """
@@ -63,6 +65,10 @@ def new_data_structs():
                                    loadfactor=0.99)
 
     catalog['countries'] = mp.newMap(203562,
+                                   maptype='CHAINING',
+                                   loadfactor=0.99)
+
+    catalog['companies'] = mp.newMap(203562,
                                    maptype='CHAINING',
                                    loadfactor=0.99)
     """
@@ -136,6 +142,31 @@ def addCountrycode(catalog, job):
             Ccode = newCountrycode(pubccode)
             mp.put(jobs, pubccode, Ccode)
         lt.addLast(Ccode['jobs'], job)
+    except Exception:
+        return None
+
+def newCompanyname(pubname):
+    entry = {'companyname': "", "jobs": None}
+    entry["companyname"] = pubname
+    entry["jobs"] = lt.newList("SINGLE_LINKED")
+    return entry
+
+def addCompanyname(catalog, job):
+    try:
+        jobs = catalog['companies']
+        if (job['company_name'] != ''):
+            pubname = job['company_name'].lower()
+            pubname = str(pubname.lower())
+        else:
+            pubname = " "
+        existid = mp.contains(jobs, pubname.lower())
+        if existid:
+            entry = mp.get(jobs, pubname.lower())
+            Cname = me.getValue(entry)
+        else:
+            Cname = newCompanyname(pubname.lower())
+            mp.put(jobs, pubname.lower(), Cname)
+        lt.addLast(Cname['jobs'], job)
     except Exception:
         return None
 
@@ -214,26 +245,46 @@ def req_3(data_structs, nom_empresa, fecha_inicial_consulta, fecha_final_consult
     # TODO: Realizar el requerimiento 3
     fecha_inicial_dt = str(dt.strptime(fecha_inicial_consulta, "%Y-%m-%d"))
     fecha_final_dt = str(dt.strptime(fecha_final_consulta, "%Y-%m-%d"))
+    ltjr = lt.newList("ARRAY_LIST")
+    ltm = lt.newList("ARRAY_LIST")
+    ltsr = lt.newList("ARRAY_LIST")
     chili = lt.newList("ARRAY_LIST")
-    for i in range(1, data_structs):
-        fecha_diccionario = dt.strptime(lt.getElement(data_structs["jobs"], i)["published_at"], '%Y-%m-%dT%H:%M:%S.%fZ')
-        fecha_diccionario_dt = fecha_diccionario.strftime("%Y-%m-%d")
-        if nom_empresa.lower() == data_structs:
+    
+    company = mp.get(data_structs['companies'], nom_empresa)
+    #print(company)
+    if company:
+        var1 = me.getValue(company)['jobs']
+        for i in lt.iterator(var1):
+            fecha_diccionario = dt.strptime(i["published_at"], '%Y-%m-%dT%H:%M:%S.%fZ')
+            fecha_diccionario_dt = fecha_diccionario.strftime("%Y-%m-%d")
             if fecha_inicial_dt <= fecha_diccionario_dt and fecha_diccionario_dt <= fecha_final_dt:
+                if "junior" == i["experience_level"].lower():
+                    lt.addLast(ltjr, i)
+                elif "mid" == i["experience_level"].lower():
+                    lt.addLast(ltm, i)
+                elif "senior" == i["experience_level"].lower():
+                    lt.addLast(ltsr, i)
                 lt.addLast(chili, i)
-                if lt.size(chili) >= 2:
-                    sortiao = merg.sort(chili, sort_r3)
-                elif lt.size(chili) <= 1:
-                    sortiao = chili 
+    
+
+    if lt.size(chili) >= 2:
+        sortiao = merg.sort(chili, sort_r3)
+    elif lt.size(chili) <= 1:
+        sortiao = chili 
+
+    #Bitfinex
+    #intelligints
 
     if lt.isEmpty(chili):
         print("Ningun resultado encontrado")
         sys.exit(0)
 
-    return sortiao
+    cant_of = lt.size(chili)
+    cant_xp_jr = lt.size(ltjr)
+    cant_xp_m = lt.size(ltm)
+    cant_xp_sr = lt.size(ltsr)
 
-    pass
-
+    return sortiao, cant_of, cant_xp_jr, cant_xp_m, cant_xp_sr
 
 def req_4(data_structs, cod_pais, fecha_inicial_consulta, fecha_final_consulta):
     """
@@ -328,8 +379,20 @@ def sort(data_structs):
     pass
 
 
-def sort_r3():
-    pass
+def sort_r3(oferta1, oferta2):
+    date1 = dt.strptime(oferta1['published_at'], '%Y-%m-%dT%H:%M:%S.%fZ')
+    date2 = dt.strptime(oferta2['published_at'], '%Y-%m-%dT%H:%M:%S.%fZ')
+    name1 = oferta1['country_code']
+    name2 = oferta2['country_code']
+    if date1 > date2:
+        return True
+    elif date1 == date2:
+        if name1 < name2:
+            return True
+        else:
+            return False
+    else:
+        return False
 
 def compareDate():
     pass
