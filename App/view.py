@@ -72,10 +72,10 @@ def load_data(control):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    size, jobs = controller.load_data(control)
-    #lista = controller.subi(control)
-    print(jobs)
-    return size, jobs
+    controller.load_data(control)
+    size = mp.size(control["model"]["jobs"])
+    print(size)
+    
 
 
 def print_data(control, id):
@@ -93,7 +93,7 @@ def print_req_1(control):
     n_ofertas = int(input("Digame la cantidad de ofertas que desea ver: "))
     cod_pais = str(input("Digame el pais del cual desea consultar ofertas: "))
     xp = str(input("Digame el nivel de experiencia que le interesa: "))
-    final, cant_xp, cant_of_pais = controller.req_1(control, n_ofertas, cod_pais, xp)
+    final, cant_xp, cant_of_pais = controller.req_1(control, n_ofertas, cod_pais.upper(), xp)
     print("El total de ofertas en ese pais: " + str(cant_of_pais))
     print("El total de ofertas por el nivel de experiencia en ese pais: " + str(cant_xp))
     size = lt.size(final)    
@@ -122,8 +122,6 @@ def print_req_1(control):
             job['city'] + " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + 
             ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
             i += 1
-
-    pass
 
 
 def print_req_2(control):
@@ -206,7 +204,8 @@ if __name__ == "__main__":
         inputs = input('Seleccione una opción para continuar\n')
         if int(inputs) == 1:
             print("Cargando información de los archivos ....\n")
-            data = load_data(control)
+            load_data(control)
+
         elif int(inputs) == 2:
             print_req_1(control)
 

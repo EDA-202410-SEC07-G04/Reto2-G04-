@@ -50,9 +50,9 @@ def load_data(control):
     Carga los datos del reto
     """
     # TODO: Realizar la carga de datos
-    control = control["model"]
-    size, jobs = load_jobs(control)
-    return size, jobs
+    load_jobs(control)
+    #load_jobs2(control)
+    
 
 def subi():
     sub1, sub2 = model.get_subi(control["model"])
@@ -63,9 +63,15 @@ def load_jobs(control):
     jobsfile = cf.data_dir + 'large-jobs.csv'
     input_file = csv.DictReader(open(jobsfile, encoding='utf-8'), delimiter=';')
     for job in input_file:
-        model.addJob(control, job)
-    return model.jobSize(control), model.jobComplete(control)
+        model.addJob(control['model'], job)
+        model.addCountrycode(control['model'], job)
+    #return model.jobSize(control), model.jobComplete(control)
 
+def load_jobs2(control):
+    jobsfile = cf.data_dir + 'large-jobs.csv'
+    input_file = csv.DictReader(open(jobsfile, encoding='utf-8'), delimiter=';')
+    for job in input_file:
+        model.addCountrycode(control['model'], job)
 
 def sort(control):
     """
@@ -90,9 +96,9 @@ def req_1(control, n_ofertas, cod_pais, xp):
     Retorna el resultado del requerimiento 1
     """
     # TODO: Modificar el requerimiento 1
-    final, cant_xp, cant_of_pais = model.req_1(control, n_ofertas, cod_pais, xp)
+
+    final, cant_xp, cant_of_pais = model.req_1(control["model"], n_ofertas, cod_pais, xp)
     return final, cant_xp, cant_of_pais
-    pass
 
 
 def req_2(control):
@@ -108,7 +114,7 @@ def req_3(control):
     Retorna el resultado del requerimiento 3
     """
     # TODO: Modificar el requerimiento 3
-    final = model.req_3(control, nom_empresa, fecha_inicial_consulta, fecha_final_consulta)
+    final = model.req_3(control["model"], nom_empresa, fecha_inicial_consulta, fecha_final_consulta)
 
     pass
 
@@ -118,7 +124,7 @@ def req_4(control):
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
-    final = model.req_4(control, cod_pais, fecha_inicial_consulta, fecha_final_consulta)
+    final = model.req_4(control["model"], cod_pais, fecha_inicial_consulta, fecha_final_consulta)
     
     pass
 

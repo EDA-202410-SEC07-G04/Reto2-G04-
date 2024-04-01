@@ -61,10 +61,15 @@ def new_data_structs():
     catalog['jobs'] = mp.newMap(203562,
                                    maptype='CHAINING',
                                    loadfactor=0.99)
+
+    catalog['countries'] = mp.newMap(203562,
+                                   maptype='CHAINING',
+                                   loadfactor=0.99)
     """
     catalog['info'] = mp.newMap(259837,
                                 maptype='CHAINING',
                                 loadfactor=1)
+
     catalog['multilocations'] = mp.newMap(244937,
                                           maptype='CHAINING',
                                           loadfactor=0.99)
@@ -109,6 +114,31 @@ def addJob(catalog, job):
     except Exception:
         return None
 
+def newCountrycode(pubccode):
+    entry = {'Countrycode': "", "jobs": None}
+    entry["Countrycode"] = pubccode
+    entry["jobs"] = lt.newList("SINGLE_LINKED", compareDate)
+    return entry
+
+def addCountrycode(catalog, job):
+    try:
+        jobs = catalog['countries']
+        if (job['country_code'] != ''):
+            pubccode = job['country_code']
+            pubccode = str(pubccode)
+        else:
+            pubccode = " "
+        existid = mp.contains(jobs, pubccode)
+        if existid:
+            entry = mp.get(jobs, pubccode)
+            Ccode = me.getValue(entry)
+        else:
+            Ccode = newCountrycode(pubccode)
+            mp.put(jobs, pubccode, Ccode)
+        lt.addLast(Ccode['jobs'], job)
+    except Exception:
+        return None
+
 # Funciones para creacion de datos
 
 def new_data(id, info):
@@ -140,45 +170,39 @@ def get_subi(data_structs):
     
     pass
 
-def jobComplete(data_structs):
-    return data_structs["jobs"]
-
-def jobSize(data_structs):
-    return mp.size(data_structs["jobs"])
-
-
 def req_1(data_structs, n_ofertas, cod_pais, xp):
     """
     Función que soluciona el requerimiento 1
     """
     # TODO: Realizar el requerimiento 1
     lt1 = lt.newList("ARRAY_LIST")
-    lt2 = lt.newList("ARRAY_LIST")
-    cant_xp = 0
-    cant_of_pais = 0
-    for i in range(1, mp.size(data_structs["jobs"])+1): 
-        ele = mp.get(data_structs["jobs"], i)
-        if cod_pais.lower() == data_structs["jobs"]:
-            lt.addFirst(lt1, data_structs)
-            if xp == data_structs:
-                lt.addLast(lt2, data_structs)
+    #print(data_structs["jobs"])
+    country = mp.get(data_structs['countries'], cod_pais)
+    if country:
+        var1 = me.getValue(country)['jobs']
+        cant_of_pais = mp.size(var1)
+        #print(var1)
+
+        #print(lt.getElement(var1, 0))
+        for i in lt.iterator(var1):
+            if xp.lower() == i["experience_level"].lower():
+                lt.addLast(lt1, i)
 
     
-    if lt.size(lt2) == 0:
+    if lt.size(lt1) == 0:
         print("Ningun resultado encontrado")
         sys.exit(0)
-    elif n_ofertas > lt.size(lt2):
-        n_ofertas = lt.size(lt2)
-    elif n_ofertas <= lt.size(lt2):
+    elif n_ofertas > lt.size(lt1):
+        n_ofertas = lt.size(lt1)
+    elif n_ofertas <= lt.size(lt1):
         n_ofertas = n_ofertas 
 
-    final = lt.subList(lt2, 0, n_ofertas)
+    final = lt.subList(lt1, 0, n_ofertas)
 
-    for x in lt.iterator(lt2):
-        cant_xp += 1
+    
+    cant_xp = lt.size(lt1)
 
-    for j in lt.iterator(lt1):
-        cant_of_pais += 1
+    
 
     
     return final, cant_xp, cant_of_pais
