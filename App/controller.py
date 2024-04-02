@@ -45,16 +45,37 @@ def new_controller():
 
 # Funciones para la carga de datos
 
-def load_data(control):
+def load_data(control, memflag=True):
     """
     Carga los datos del reto
     """
     # TODO: Realizar la carga de datos
+    start_time = getTime()
+    if memflag is True:
+            tracemalloc.start()
+            start_memory = getMemory()
+
     load_jobs(control)
+
+    stop_time = getTime()
+    delta_time = deltaTime(stop_time, start_time)
+
+
+    if memflag is True:
+        stop_memory = getMemory()
+        tracemalloc.stop()
+        delta_memory = deltaMemory(stop_memory, start_memory)
+        return delta_time, delta_memory
+
+    else:
+        return delta_time
+
+
+
     #load_jobs2(control)
     
 
-def subi():
+def subi(control):
     sub1, sub2 = model.get_subi(control["model"])
     return sub1, sub2
 # Funciones de ordenamiento
@@ -192,5 +213,42 @@ def delta_memory(stop_memory, start_memory):
     delta_memory = delta_memory/1024.0
     return delta_memory
 
+
+def getTime():
+    """
+    devuelve el instante tiempo de procesamiento en milisegundos
+    """
+    return float(time.perf_counter()*1000)
+
+
+def deltaTime(end, start):
+    """
+    devuelve la diferencia entre tiempos de procesamiento muestreados
+    """
+    elapsed = float(end - start)
+    return elapsed
+
+
+def getMemory():
+    """
+    toma una muestra de la memoria alocada en instante de tiempo
+    """
+    return tracemalloc.take_snapshot()
+
+
+def deltaMemory(stop_memory, start_memory):
+    """
+    calcula la diferencia en memoria alocada del programa entre dos
+    instantes de tiempo y devuelve el resultado en bytes (ej.: 2100.0 B)
+    """
+    memory_diff = stop_memory.compare_to(start_memory, "filename")
+    delta_memory = 0.0
+
+    # suma de las diferencias en uso de memoria
+    for stat in memory_diff:
+        delta_memory = delta_memory + stat.size_diff
+    # de Byte -> kByte
+    delta_memory = delta_memory/1024.0
+    return delta_memory
 
 csv.field_size_limit(2147483647)
