@@ -95,7 +95,7 @@ def print_req_1(control):
     n_ofertas = int(input("Digame la cantidad de ofertas que desea ver: "))
     cod_pais = str(input("Digame el pais del cual desea consultar ofertas: "))
     xp = str(input("Digame el nivel de experiencia que le interesa: "))
-    final, cant_xp, cant_of_pais = controller.req_1(control, n_ofertas, cod_pais.upper(), xp)
+    final, cant_xp, cant_of_pais = controller.req_1(control, n_ofertas, cod_pais.lower(), xp)
     print("            ")
     print("El total de ofertas en ese pais: " + str(cant_of_pais))
     print("El total de ofertas por el nivel de experiencia en ese pais: " + str(cant_xp))
@@ -183,11 +183,59 @@ def print_req_4(control):
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
+    cant_empresas_una_oferta = []
+    ciudades = []
+    messi = lt.newList("ARRAY_LIST")
+    cr7 = lt.newList("ARRAY_LIST")
+    mes = 0
     cod_pais = str(input("Digame el pais del cual desea consultar ofertas: "))
     fecha_inicial_consulta =  str(input("Que fecha minima le interesa?: "))
     fecha_final_consulta = str(input("Que fecha maxima le interesa?: "))
+    
 
-    pass
+    final, cantidad = controller.req_4(control, cod_pais.lower(), fecha_inicial_consulta, fecha_final_consulta)
+    for i in lt.iterator(final):
+        ciudades.append(i["city"])
+        if lt.isPresent(messi, i["company_name"]) == 0:
+            lt.addLast(messi, i["company_name"])
+        else:
+            mes += 1
+
+    tot_emp = lt.size(messi)
+
+    contador = Counter(ciudades)
+    elemento_mayor, frecuencia_mayor = contador.most_common(1)[0]    
+    elemento_menor, frecuencia_menor = contador.most_common()[-1]
+
+    print("            ")
+    print("Numero total de ofertas: " + str(cantidad))
+    print("Numero de empresas que publicaron al menos una oferta: " + str(tot_emp))
+    print("Ciudad con mayor número de ofertas: " + str(elemento_mayor) + " número de empleos " + str(frecuencia_mayor))
+    print("Ciudad con menor número de ofertas: " + str(elemento_menor) + " número de empleos " + str(frecuencia_menor))
+
+    size = lt.size(final)    
+    sample = size
+    if size == 1:
+        job = lt.getElement(final, 0)
+        print("Los", size, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] + ' Nombre de la compañia: ' + job['company_name'] + ' Nivel de XP: ' + job['experience_level'] + 
+        ' Ciudad: ' + job['city'] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + ' Remoto?: ' + job['remote_interview'] + 
+        ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
+    elif size <= sample*2:
+        print("Los", size, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        for job in lt.iterator(final):
+            print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] + ' Nombre de la compañia: ' + job['company_name'] + ' Nivel de XP: ' + job['experience_level'] + 
+        ' Ciudad: ' + job['city'] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + ' Remoto?: ' + job['remote_interview'] + 
+        ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
+    else:
+        print("Los", sample, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        i = 1
+        while i <= sample:
+            job = lt.getElement(final, i)
+            print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] + ' Nombre de la compañia: ' + job['company_name'] + ' Nivel de XP: ' + job['experience_level'] + 
+        ' Ciudad: ' + job['city'] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + ' Remoto?: ' + job['remote_interview'] + 
+        ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
+            i += 1
 
 
 def print_req_5(control):

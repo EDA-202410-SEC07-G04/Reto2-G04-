@@ -134,17 +134,17 @@ def addCountrycode(catalog, job):
     try:
         jobs = catalog['countries']
         if (job['country_code'] != ''):
-            pubccode = job['country_code']
-            pubccode = str(pubccode)
+            pubccode = job['country_code'].lower()
+            pubccode = str(pubccode.lower())
         else:
             pubccode = " "
-        existid = mp.contains(jobs, pubccode)
+        existid = mp.contains(jobs, pubccode.lower())
         if existid:
-            entry = mp.get(jobs, pubccode)
+            entry = mp.get(jobs, pubccode.lower())
             Ccode = me.getValue(entry)
         else:
-            Ccode = newCountrycode(pubccode)
-            mp.put(jobs, pubccode, Ccode)
+            Ccode = newCountrycode(pubccode.lower())
+            mp.put(jobs, pubccode.lower(), Ccode)
         lt.addLast(Ccode['jobs'], job)
     except Exception:
         return None
@@ -319,26 +319,33 @@ def req_4(data_structs, cod_pais, fecha_inicial_consulta, fecha_final_consulta):
     Función que soluciona el requerimiento 4
     """
     # TODO: Realizar el requerimiento 4
-    chili = lt.newList("ARRAY_LIST")
     fecha_inicial_dt = str(dt.strptime(fecha_inicial_consulta, "%Y-%m-%d"))
-    fecha_final_dt = str(dt.strptime(fecha_final_consulta, "%Y-%m-%d")) 
-    for i in range(1, data_structs):
-        fecha_diccionario = dt.strptime(lt.getElement(data_structs["jobs"], i)["published_at"], '%Y-%m-%dT%H:%M:%S.%fZ')
-        fecha_diccionario_dt = fecha_diccionario.strftime("%Y-%m-%d")
-        if i["country_code"] == cod_pais: 
+    fecha_final_dt = str(dt.strptime(fecha_final_consulta, "%Y-%m-%d"))
+    chili = lt.newList("ARRAY_LIST")
+    lt1 = lt.newList("ARRAY_LIST")
+    country = mp.get(data_structs['countries'], cod_pais)
+    #print(country)
+    if country:
+        var1 = me.getValue(country)['jobs']
+        for i in lt.iterator(var1):
+            fecha_diccionario = dt.strptime(i["published_at"], '%Y-%m-%dT%H:%M:%S.%fZ')
+            fecha_diccionario_dt = fecha_diccionario.strftime("%Y-%m-%d")
             if fecha_inicial_dt <= fecha_diccionario_dt and fecha_diccionario_dt <= fecha_final_dt:
                 lt.addLast(chili, i)
-                if lt.size(chili) >= 2:
-                    sortiao = merg.sort(chili, sort_r3)
-                elif lt.size(chili) <= 1:
-                    sortiao = chili 
+    
+    if lt.size(chili) >= 2:
+        sortiao = merg.sort(chili, sort_r3)
+    elif lt.size(chili) <= 1:
+        sortiao = chili 
 
     if lt.isEmpty(chili):
         print("Ningun resultado encontrado")
         sys.exit(0)
-    
-    return sortiao 
-    pass
+
+    cant_of_pais = lt.size(chili)
+
+
+    return sortiao, cant_of_pais
 
 
 def req_5(data_structs, ciudad, fecha_inicial_consulta, fecha_final_consulta):

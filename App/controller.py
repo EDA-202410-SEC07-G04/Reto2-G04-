@@ -114,14 +114,13 @@ def req_3(control, nom_empresa, fecha_inicial_consulta, fecha_final_consulta):
     return sortiao, cant_of, cant_xp_jr, cant_xp_m, cant_xp_sr
 
 
-def req_4(control):
+def req_4(control, cod_pais, fecha_inicial_consulta, fecha_final_consulta):
     """
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
-    final = model.req_4(control["model"], cod_pais, fecha_inicial_consulta, fecha_final_consulta)
-    
-    pass
+    final, cant = model.req_4(control["model"], cod_pais, fecha_inicial_consulta, fecha_final_consulta)
+    return final, cant
 
 
 def req_5(control, ciudad, fecha_inicial_consulta, fecha_final_consulta):
