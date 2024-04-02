@@ -62,19 +62,19 @@ def new_data_structs():
 
     catalog['jobs'] = mp.newMap(203562,
                                    maptype='CHAINING',
-                                   loadfactor=0.99)
+                                   loadfactor=0.9)
 
     catalog['countries'] = mp.newMap(203562,
                                    maptype='CHAINING',
-                                   loadfactor=0.99)
+                                   loadfactor=0.9)
 
     catalog['companies'] = mp.newMap(203562,
                                    maptype='CHAINING',
-                                   loadfactor=0.99)
+                                   loadfactor=0.9)
 
     catalog['cities'] = mp.newMap(203562,
                                    maptype='CHAINING',
-                                   loadfactor=0.99)
+                                   loadfactor=0.9)
     """
     catalog['info'] = mp.newMap(259837,
                                 maptype='CHAINING',

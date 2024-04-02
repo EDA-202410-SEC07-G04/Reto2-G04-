@@ -67,6 +67,15 @@ def print_menu():
     print("9- Ejecutar Requerimiento 8")
     print("0- Salir")
 
+def printLoadDataAnswer(answer):
+    """
+    Imprime los datos de tiempo y memoria de la carga de datos
+    """
+    if isinstance(answer, (list, tuple)) is True:
+        print("Tiempo [ms]: ", f"{answer[0]:.3f}", "||",
+              "Memoria [kB]: ", f"{answer[1]:.3f}")
+    else:
+        print("Tiempo [ms]: ", f"{answer:.3f}")
 
 def load_data(control):
     """
@@ -332,8 +341,11 @@ if __name__ == "__main__":
         print_menu()
         inputs = input('Seleccione una opción para continuar\n')
         if int(inputs) == 1:
+            mem = True
             print("Cargando información de los archivos ....\n")
             load_data(control)
+            answer = controller.load_data(control, memflag=mem)
+            printLoadDataAnswer(answer)
 
         elif int(inputs) == 2:
             print_req_1(control)
