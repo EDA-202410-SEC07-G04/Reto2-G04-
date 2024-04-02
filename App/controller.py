@@ -114,12 +114,13 @@ def req_1(control, n_ofertas, cod_pais, xp):
     return final, cant_xp, cant_of_pais
 
 
-def req_2(control):
+def req_2(control, num_ofertas, empresa, ciudad):
     """
     Retorna el resultado del requerimiento 2
     """
     # TODO: Modificar el requerimiento 2
-    pass
+    sublista, tamanho = model.req_2(control["model"],num_ofertas, empresa, ciudad)
+    return sublista, tamanho
 
 
 def req_3(control, nom_empresa, fecha_inicial_consulta, fecha_final_consulta):

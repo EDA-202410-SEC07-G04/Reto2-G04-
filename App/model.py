@@ -258,12 +258,32 @@ def req_1(data_structs, n_ofertas, cod_pais, xp):
     return final, cant_xp, cant_of_pais
 
 
-def req_2(data_structs):
+def req_2(data_structs, num_ofertas, empresa, ciudad):
     """
     Función que soluciona el requerimiento 2
     """
     # TODO: Realizar el requerimiento 2
-    pass
+    filtro = lt.newList('ARRAY_LIST')
+    company = mp.get(data_structs["companies"], empresa)
+
+    if company:
+        valores = me.getValue(company)["jobs"]
+        for job in lt.iterator(valores):
+            if ciudad.lower() == job["city"].lower():
+                lt.addLast(filtro, job)
+
+    tamanho = lt.size(filtro)
+    if tamanho == 0:
+        print("Ningun resultado encontrado")
+        sys.exit(0)
+    elif num_ofertas > lt.size(filtro):
+        num_ofertas = lt.size(filtro)
+    elif num_ofertas <= lt.size(filtro):
+        num_ofertas = num_ofertas 
+    
+    sublista = lt.subList(filtro, 0, num_ofertas)
+
+    return sublista, tamanho
 
 
 def req_3(data_structs, nom_empresa, fecha_inicial_consulta, fecha_final_consulta):

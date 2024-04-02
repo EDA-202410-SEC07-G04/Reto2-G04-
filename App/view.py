@@ -141,7 +141,40 @@ def print_req_2(control):
         Función que imprime la solución del Requerimiento 2 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 2
-    pass
+    num_ofertas = int(input("Cantidad de ofertas que desea ver: "))
+    empresa = str(input("Empresa de la cual desea consultar las ofertas: "))
+    ciudad = str(input("Ciudad de la cual desea ver las ofertas: "))
+
+    sublista, tamanho = controller.req_2(control, num_ofertas, empresa.lower(), ciudad.lower())
+    size = tamanho
+    print("            ")
+    print("El total de ofertas en esta empresa y ciudad es : " + str(tamanho))
+    sample = size
+    if size == 1:
+        job = lt.getElement(sublista, 0)
+        print("Los", size, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  
+            ' Nombre de la compañia: ' + job['company_name'] + ' Nivel de XP: ' + job['experience_level'] + " Pais: " + job["country_code"] + ' Ciudad: ' + 
+            job['city'] + " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + 
+            ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
+    elif size <= sample*2:
+        print("Los", size, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        for job in lt.iterator(sublista):
+            print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  
+            ' Nombre de la compañia: ' + job['company_name'] + ' Nivel de XP: ' + job['experience_level'] + " Pais: " + job["country_code"] + ' Ciudad: ' + 
+            job['city'] + " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + 
+            ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
+    else:
+        print("Los", sample, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        i = 1
+        while i <= sample:
+            job = lt.getElement(sublista, i)
+            print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  
+            ' Nombre de la compañia: ' + job['company_name'] + ' Nivel de XP: ' + job['experience_level'] + " Pais: " + job["country_code"] + ' Ciudad: ' + 
+            job['city'] + " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + 
+            ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
+            i += 1
+
 
 
 def print_req_3(control):
