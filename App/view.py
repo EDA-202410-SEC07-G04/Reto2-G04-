@@ -341,10 +341,10 @@ if __name__ == "__main__":
         print_menu()
         inputs = input('Seleccione una opción para continuar\n')
         if int(inputs) == 1:
-            mem = True
+            #mem = True
             print("Cargando información de los archivos ....\n")
-            load_data(control)
-            answer = controller.load_data(control, memflag=mem)
+            #load_data(control)
+            answer = controller.load_data(control)
             printLoadDataAnswer(answer)
 
         elif int(inputs) == 2:

@@ -45,15 +45,15 @@ def new_controller():
 
 # Funciones para la carga de datos
 
-def load_data(control, memflag=True):
+def load_data(control):
     """
     Carga los datos del reto
     """
     # TODO: Realizar la carga de datos
     start_time = getTime()
-    if memflag is True:
-            tracemalloc.start()
-            start_memory = getMemory()
+
+    tracemalloc.start()
+    start_memory = getMemory()
 
     load_jobs(control)
 
@@ -61,14 +61,10 @@ def load_data(control, memflag=True):
     delta_time = deltaTime(stop_time, start_time)
 
 
-    if memflag is True:
-        stop_memory = getMemory()
-        tracemalloc.stop()
-        delta_memory = deltaMemory(stop_memory, start_memory)
-        return delta_time, delta_memory
-
-    else:
-        return delta_time
+    stop_memory = getMemory()
+    tracemalloc.stop()
+    delta_memory = deltaMemory(stop_memory, start_memory)
+    return delta_time, delta_memory
 
 
 
