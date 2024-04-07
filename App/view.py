@@ -29,6 +29,7 @@ from DISClib.ADT import stack as st
 from DISClib.ADT import queue as qu
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
+from tabulate import tabulate
 assert cf
 #from tabulate import tabulate
 import traceback
@@ -86,6 +87,10 @@ def load_data(control):
     size = mp.size(control["model"]["jobs"])
     #print(control["model"]["companies"])
     print(size)
+    lista = controller.get_jobs_sublist(control)
+    print(lista)
+    print(tabulate(list(lt.iterator(lista[0]))+list(lt.iterator(lista[1])), headers="keys", tablefmt="grid"))
+
     
 
 
@@ -376,9 +381,9 @@ if __name__ == "__main__":
         if int(inputs) == 1:
             #mem = True
             print("Cargando información de los archivos ....\n")
-            #load_data(control)
-            answer = controller.load_data(control)
-            printLoadDataAnswer(answer)
+            load_data(control)
+            #answer = controller.load_data(control)
+            #printLoadDataAnswer(answer)
 
         elif int(inputs) == 2:
             print_req_1(control)

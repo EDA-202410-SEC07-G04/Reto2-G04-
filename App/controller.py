@@ -93,6 +93,9 @@ def sort(control):
     #TODO: Llamar la función del modelo para ordenar los datos
     pass
 
+def get_jobs_sublist (control):
+    sublist1, sublist2 = model.get_jobs_sublist(control["model"])
+    return sublist1, sublist2
 
 # Funciones de consulta sobre el catálogo
 
