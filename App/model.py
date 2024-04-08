@@ -60,7 +60,7 @@ def new_data_structs():
                'multilocations': None,
                'skills': None}
 
-    catalog['jobs'] = lt.newList()
+    catalog['jobs'] = lt.newList("ARRAY_LIST")
 
     """catalog['jobs'] = mp.newMap(203562,
                                    maptype='CHAINING',
@@ -126,7 +126,7 @@ def get_jobs_sublist(data_structs):
        
    
        
-    return lista0, lista1
+    return lista1, lista0
 
 
 # Funciones para agregar informacion al modelo
