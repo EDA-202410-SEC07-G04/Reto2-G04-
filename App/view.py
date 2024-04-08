@@ -337,8 +337,6 @@ def print_req_5(control):
             print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  ' Nombre de la compañia: ' + job['company_name'] +
             " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'])
             i += 1
-
-
 def print_req_6(control):
     """
         Función que imprime la solución del Requerimiento 6 en consola
