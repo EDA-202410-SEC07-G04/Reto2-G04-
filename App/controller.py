@@ -112,9 +112,11 @@ def req_1(control, n_ofertas, cod_pais, xp):
     Retorna el resultado del requerimiento 1
     """
     # TODO: Modificar el requerimiento 1
-
+    start_time = get_time()
     final, cant_xp, cant_of_pais = model.req_1(control["model"], n_ofertas, cod_pais, xp)
-    return final, cant_xp, cant_of_pais
+    end_time = get_time()
+    deltaTime = delta_time(start_time, end_time)
+    return final, cant_xp, cant_of_pais , deltaTime
 
 
 def req_2(control, num_ofertas, empresa, ciudad):
@@ -122,8 +124,11 @@ def req_2(control, num_ofertas, empresa, ciudad):
     Retorna el resultado del requerimiento 2
     """
     # TODO: Modificar el requerimiento 2
+    start_time = get_time()
     sublista, tamanho = model.req_2(control["model"],num_ofertas, empresa, ciudad)
-    return sublista, tamanho
+    end_time = get_time()
+    deltaTime = delta_time(start_time, end_time)
+    return sublista, tamanho, deltaTime
 
 
 def req_3(control, nom_empresa, fecha_inicial_consulta, fecha_final_consulta):
@@ -131,8 +136,11 @@ def req_3(control, nom_empresa, fecha_inicial_consulta, fecha_final_consulta):
     Retorna el resultado del requerimiento 3
     """
     # TODO: Modificar el requerimiento 3
+    start_time = get_time()
     sortiao, cant_of, cant_xp_jr, cant_xp_m, cant_xp_sr = model.req_3(control["model"], nom_empresa, fecha_inicial_consulta, fecha_final_consulta)
-    return sortiao, cant_of, cant_xp_jr, cant_xp_m, cant_xp_sr
+    end_time = get_time()
+    deltaTime = delta_time(start_time, end_time)
+    return sortiao, cant_of, cant_xp_jr, cant_xp_m, cant_xp_sr, deltaTime 
 
 
 def req_4(control, cod_pais, fecha_inicial_consulta, fecha_final_consulta):
@@ -140,8 +148,11 @@ def req_4(control, cod_pais, fecha_inicial_consulta, fecha_final_consulta):
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
+    start_time = get_time()
     final, cant = model.req_4(control["model"], cod_pais, fecha_inicial_consulta, fecha_final_consulta)
-    return final, cant
+    end_time = get_time()
+    deltaTime = delta_time(start_time, end_time)
+    return final, cant, deltaTime
 
 
 def req_5(control, ciudad, fecha_inicial_consulta, fecha_final_consulta):
@@ -149,8 +160,11 @@ def req_5(control, ciudad, fecha_inicial_consulta, fecha_final_consulta):
     Retorna el resultado del requerimiento 5
     """
     # TODO: Modificar el requerimiento 5
+    start_time = get_time()
     final, cantidad = model.req_5(control["model"], ciudad, fecha_inicial_consulta, fecha_final_consulta)
-    return final, cantidad
+    end_time = get_time()
+    deltaTime = delta_time(start_time, end_time)
+    return final, cantidad, deltaTime
 
 def req_6(control):
     """
