@@ -75,7 +75,9 @@ def subi(control):
 # Funciones de ordenamiento
 
 def load_jobs(control):
-    jobsfile = cf.data_dir + 'large-jobs.csv'
+    #"80-por-jobs.csv"
+    #'large-jobs.csv'
+    jobsfile = cf.data_dir + "10-por-jobs.csv"
     input_file = csv.DictReader(open(jobsfile, encoding='utf-8'), delimiter=';')
     for job in input_file:
         model.addJob(control['model'], job)
@@ -123,7 +125,7 @@ def req_1(control, n_ofertas, cod_pais, xp):
     final, cant_xp, cant_of_pais = model.req_1(control["model"], n_ofertas, cod_pais, xp)
     end_time = get_time()
     deltaTime = delta_time(start_time, end_time)
-    return final, cant_xp, cant_of_pais , deltaTime
+    return final, cant_xp, cant_of_pais, deltaTime
 
 
 def req_2(control, num_ofertas, empresa, ciudad):
