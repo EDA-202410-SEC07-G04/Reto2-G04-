@@ -82,10 +82,11 @@ def load_data(control):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    controller.load_data(control)
+    respuesta = controller.load_data(control)
     size = mp.size(control["model"]["jobs"])
     #print(control["model"]["companies"])
     print(size)
+    print(printLoadDataAnswer(respuesta))
     
 
 
@@ -306,7 +307,53 @@ def print_req_6(control):
         Función que imprime la solución del Requerimiento 6 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 6
-    pass
+    cant_ciu = int(input("Digame la cantidad de ciudades que desea consultar: "))
+    xp = str(input("Digame el nivel de experiencia que le interesa (en caso de no estar interesado en uno en especifico escriba indiferente): "))
+    ano = str(input("Digame el año que le interesa(XXXX): "))
+
+    final, cantc, messi, cant_empresas = controller.req_6(control, cant_ciu, xp.lower(), ano)
+
+    ciu_may = lt.getElement(final, 1)
+    #print(ciu_may)
+    ciu_men = lt.getElement(messi, 0)
+    #print(ciu_men)
+
+    print("            ")
+    print("Ciudades que cumplen con las condiciones: " + str(lt.size(final)))
+    print("Total de empresas que cumplen con las condiciones: " + str(lt.size(cant_empresas)))
+    print("Numero total de ofertas que cumplen con las condiciones: " + str(cantc))
+    print("Ciudad con mayor número de ofertas: " + str(ciu_may["ciudad"]) + " número de empleos: " + str(ciu_may["total_ofertas"]))
+    print("Ciudad con menor número de ofertas: " + str(ciu_men["ciudad"]) + " número de empleos: " + str(ciu_men["total_ofertas"]))
+    size = lt.size(final)    
+    sample = size
+    if size == 1:
+        job = lt.getElement(final, 0)
+        print("Las", size, "ciudades ordenadas por cantidad de ofertas son: ")
+        print("            ")
+        print('ciudad: ' + job["ciudad"] + ' Pais: ' + job['pais'] +  ' Ofertas en la ciudad: ' + str(job['total_ofertas']) +
+            " salario promedio: " + str(job["salario_promedio"]) + ' empresas con al menos una oferta: ' + str(job['cant_empresas']) + 
+            ' empresa con mas ofertas en esa ciudad: ' + job['empresa_mas_ofertas'] + ' conteo: ' + str(job['cantidad_ofertas_empresa_mas']) + 
+            ' mejor oferta en la ciudad: ' + str(job['mejor_oferta']) + ' peor oferta en la ciudad: ' + str(job['peor_oferta']))
+    elif size <= sample*2:
+        print("Las", size, "ciudades ordenadas por cantidad de ofertas son: ")
+        for job in lt.iterator(final):
+            print("            ")
+            print('ciudad: ' + job["ciudad"] + ' Pais: ' + job['pais'] +  ' Ofertas en la ciudad: ' + str(job['total_ofertas']) +
+            " salario promedio: " + str(job["salario_promedio"]) + ' empresas con al menos una oferta: ' + str(job['cant_empresas']) + 
+            ' empresa con mas ofertas en esa ciudad: ' + job['empresa_mas_ofertas'] + ' conteo: ' + str(job['cantidad_ofertas_empresa_mas']) + 
+            ' mejor oferta en la ciudad: ' + str(job['mejor_oferta']) + ' peor oferta en la ciudad: ' + str(job['peor_oferta']))
+    else:
+        print("Las", sample, "ciudades ordenadas por cantidad de ofertas son: ")
+        i = 1
+        while i <= sample:
+            job = lt.getElement(final, i)
+            print("            ")
+            print('ciudad: ' + job["ciudad"] + ' Pais: ' + job['pais'] +  ' Ofertas en la ciudad: ' + str(job['total_ofertas']) +
+            " salario promedio: " + str(job["salario_promedio"]) + ' empresas con al menos una oferta: ' + str(job['cant_empresas']) + 
+            ' empresa con mas ofertas en esa ciudad: ' + job['empresa_mas_ofertas'] + ' conteo: ' + str(job['cantidad_ofertas_empresa_mas']) + 
+            ' mejor oferta en la ciudad: ' + str(job['mejor_oferta']) + ' peor oferta en la ciudad: ' + str(job['peor_oferta']))
+            i += 1
+    
 
 
 def print_req_7(control):
@@ -344,8 +391,8 @@ if __name__ == "__main__":
             mem = True
             print("Cargando información de los archivos ....\n")
             load_data(control)
-            answer = controller.load_data(control, memflag=mem)
-            printLoadDataAnswer(answer)
+            #answer = controller.load_data(control, memflag=mem)
+            #printLoadDataAnswer(answer)
 
         elif int(inputs) == 2:
             print_req_1(control)

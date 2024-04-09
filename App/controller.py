@@ -45,30 +45,28 @@ def new_controller():
 
 # Funciones para la carga de datos
 
-def load_data(control, memflag=True):
+def load_data(control):
     """
     Carga los datos del reto
     """
     # TODO: Realizar la carga de datos
     start_time = getTime()
-    if memflag is True:
-            tracemalloc.start()
-            start_memory = getMemory()
+    tracemalloc.start()
+    start_memory = getMemory()
 
     load_jobs(control)
+    load_info(control)
 
     stop_time = getTime()
     delta_time = deltaTime(stop_time, start_time)
 
 
-    if memflag is True:
-        stop_memory = getMemory()
-        tracemalloc.stop()
-        delta_memory = deltaMemory(stop_memory, start_memory)
-        return delta_time, delta_memory
+    
+    stop_memory = getMemory()
+    tracemalloc.stop()
+    delta_memory = deltaMemory(stop_memory, start_memory)
+    return delta_time, delta_memory
 
-    else:
-        return delta_time
 
 
 
@@ -88,6 +86,15 @@ def load_jobs(control):
         model.addCountrycode(control['model'], job)
         model.addCompanyname(control['model'], job)
         model.addCityname(control['model'], job)
+        model.addXpname(control['model'], job)
+        model.addYear(control['model'], job)
+
+def load_info(control):
+    jobsfile = cf.data_dir + 'large-employments_types.csv'
+    input_file = csv.DictReader(open(jobsfile, encoding='utf-8'), delimiter=';')
+    for info in input_file:
+        model.addType(control['model'], info)
+        
     #return model.jobSize(control), model.jobComplete(control)
 
 def sort(control):
@@ -152,12 +159,13 @@ def req_5(control, ciudad, fecha_inicial_consulta, fecha_final_consulta):
     final, cantidad = model.req_5(control["model"], ciudad, fecha_inicial_consulta, fecha_final_consulta)
     return final, cantidad
 
-def req_6(control):
+def req_6(control, cant_ciu, xp, ano):
     """
     Retorna el resultado del requerimiento 6
     """
     # TODO: Modificar el requerimiento 6
-    pass
+    final, cantc, messi, cant_empresas = model.req_6(control["model"], cant_ciu, xp, ano) 
+    return final, cantc, messi, cant_empresas
 
 
 def req_7(control):
