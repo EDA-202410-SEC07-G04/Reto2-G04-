@@ -37,6 +37,7 @@ from DISClib.Algorithms.Sorting import selectionsort as se
 from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
 from datetime import datetime as dt
+from collections import defaultdict
 import sys
 assert cf
 
@@ -77,11 +78,20 @@ def new_data_structs():
     catalog['cities'] = mp.newMap(203562,
                                    maptype='CHAINING',
                                    loadfactor=0.9)
-    """
+    
+    catalog['xps'] = mp.newMap(203562,
+                                   maptype='CHAINING',
+                                   loadfactor=0.9)
+
+    catalog['years'] = mp.newMap(203562,
+                                   maptype='CHAINING',
+                                   loadfactor=0.9)
+
+    
     catalog['info'] = mp.newMap(259837,
                                 maptype='CHAINING',
-                                loadfactor=1)
-
+                                loadfactor=0.9)
+    """
     catalog['multilocations'] = mp.newMap(244937,
                                           maptype='CHAINING',
                                           loadfactor=0.99)
@@ -242,6 +252,77 @@ def addCityname(catalog, job):
         lt.addLast(Cname['jobs'], job)
     except Exception:
         return None
+
+def newXpname(pubxp):
+    entry = {'xpname': "", "jobs": None}
+    entry["xpname"] = pubxp
+    entry["jobs"] = lt.newList("SINGLE_LINKED")
+    return entry
+
+def addXpname(catalog, job):
+    try:
+        jobs = catalog['xps']
+        if (job['experience_level'] != ''):
+            pubxp = job['experience_level'].lower()
+            pubxp = str(pubxp.lower())
+        else:
+            pubxp = " "
+        existxp = mp.contains(jobs, pubxp.lower())
+        if existxp:
+            entry = mp.get(jobs, pubxp.lower())
+            Xname = me.getValue(entry)
+        else:
+            Xname = newCityname(pubxp.lower())
+            mp.put(jobs, pubxp.lower(), Xname)
+        lt.addLast(Xname['jobs'], job)
+    except Exception:
+        return None
+
+def newYear(pubyear):
+    entry = {'year': "", "jobs": None}
+    entry["year"] = pubyear
+    entry["jobs"] = lt.newList("SINGLE_LINKED")
+    return entry
+
+def addYear(catalog, job):
+    try:
+        years = catalog['years']
+        if (job["published_at"] != ''):
+            ano = dt.strptime(job["published_at"], '%Y-%m-%dT%H:%M:%S.%fZ')
+            anono = fecha_diccionario.strftime("%Y")
+            pubyear = anono
+            pubyear = int(float(pubyear))
+        else:
+            pubyear = 2020
+        existyear = mp.contains(years, pubyear)
+        if existyear:
+            entry = mp.get(years, pubyear)
+            year = me.getValue(entry)
+        else:
+            year = newYear(pubyear)
+            mp.put(years, pubyear, year)
+        lt.addLast(year['jobs'], job)
+    except Exception:
+        return None
+
+def addType(catalog, job):
+    try:
+        jobs = catalog['info']
+        if (job['id'] != ''):
+            pubid = job['id']
+            pubid = str(pubid)
+        else:
+            pubid = " "
+        existid = mp.contains(jobs, pubid)
+        if existid:
+            entry = mp.get(jobs, pubid)
+            ide = me.getValue(entry)
+        else:
+            ide = newId(pubid)
+            mp.put(jobs, pubid, ide)
+        lt.addLast(ide['jobs'], job)
+    except Exception:
+        return None
 # Funciones para creacion de datos
 
 def new_data(id, info):
@@ -279,6 +360,7 @@ def req_1(data_structs, n_ofertas, cod_pais, xp):
     """
     # TODO: Realizar el requerimiento 1
     lt1 = lt.newList("ARRAY_LIST")
+    sortiao = lt.newList("ARRAY_LIST")
     country = mp.get(data_structs['countries'], cod_pais)
     if country:
         var1 = me.getValue(country)['jobs']
@@ -287,15 +369,22 @@ def req_1(data_structs, n_ofertas, cod_pais, xp):
             if xp.lower() == i["experience_level"].lower():
                 lt.addLast(lt1, i)
     
-    if lt.size(lt1) == 0:
+    if lt.isEmpty(lt1):
         print("Ningun resultado encontrado")
         sys.exit(0)
-    elif n_ofertas > lt.size(lt1):
-        n_ofertas = lt.size(lt1)
-    elif n_ofertas <= lt.size(lt1):
+    elif lt.size(lt1) >= 2:
+        sortiao = merg.sort(lt1, sort_r3)
+    elif lt.size(lt1) <= 1:
+        sortiao = lt1 
+
+
+    if n_ofertas > lt.size(sortiao):
+        n_ofertas = lt.size(sortiao)
+    elif n_ofertas <= lt.size(sortiao):
         n_ofertas = n_ofertas 
 
-    final = lt.subList(lt1, 0, n_ofertas)
+
+    final = lt.subList(sortiao, 1, n_ofertas)
 
     cant_xp = lt.size(lt1)
 
@@ -448,12 +537,151 @@ def req_5(data_structs, ciudad, fecha_inicial_consulta, fecha_final_consulta):
     return sortiao, tot_of
 
 
-def req_6(data_structs):
+def req_6(data_structs, cant_ciu, xp, ano):
     """
     Función que soluciona el requerimiento 6
     """
     # TODO: Realizar el requerimiento 6
-    pass
+    ano_fi = str(dt.strptime(ano, "%Y"))
+    info_lt = lt.newList("ARRAY_LIST")
+    chili = lt.newList("ARRAY_LIST")
+    print(data_structs["years"])
+    
+
+    if xp == "indiferente":
+        ltjr = lt.newList("ARRAY_LIST")
+        ltm = lt.newList("ARRAY_LIST")
+        ltsr = lt.newList("ARRAY_LIST")
+        res = mp.get(data_structs['years'], ano_fi)
+        print(res)
+        if res:
+            var1 = me.getValue(res)["jobs"]
+            for i in lt.iterator(var1):
+                lt.addLast(chili, i)
+                ide_info = i["id"]
+                info = mp.get(data_structs['info'], ide_info)
+                if info:
+                    var2 = me.getValue(info)["jobs"]
+                    for q in lt.iterator(var2):
+                        lt.addLast(info_lt, q)
+    elif xp == "junior" or xp == "mid" or xp == "senior":
+        res = mp.get(data_structs['xps'], xp)
+        if res:
+            var1 = me.getValue(res)["jobs"]
+            for i in lt.iterator(var1):
+                fecha_diccionario = dt.strptime(i["published_at"], '%Y-%m-%dT%H:%M:%S.%fZ')
+                fecha_final = fecha_diccionario.strftime("%Y")
+                if fecha_final == ano:
+                    ide_info = i["id"]
+                    lt.addLast(chili, i)
+                    info = mp.get(data_structs['info'], ide_info)
+                    if info:
+                        var2 = me.getValue(info)["jobs"]
+                        for q in lt.iterator(var2):
+                            lt.addLast(info_lt, q)
+
+    else:
+        print("nivel de xp no valido")
+        sys.exit(0)
+
+    tot_of = lt.size(chili)
+
+    #datos = req64(data_structs, chili, info_lt)
+    datos = req64(chili, info_lt)
+    cant_empresas = req62(chili)
+
+    if lt.size(datos) >= 2:
+        sortiao = merg.sort(datos, sort_r6)
+    elif lt.size(datos) <= 1:
+        sortiao = datos 
+    if lt.isEmpty(datos):
+        print("Ningun resultado encontrado")
+        sys.exit(0)
+
+    #print(sortiao)
+    finalissima = lt.subList(sortiao, 1, cant_ciu)
+
+    return finalissima, tot_of, sortiao, cant_empresas
+
+def req62(lst):
+    cr7 = lt.newList("ARRAY_LIST")
+
+    for i in lt.iterator(lst):
+        if lt.isPresent(cr7, i["company_name"]) == 0:
+            lt.addLast(cr7, i["company_name"])
+        else:
+            batman = 0
+    
+    return cr7
+
+
+
+def req64(lst, info_lt):
+    fin = {}
+    for i in lt.iterator(lst):
+        fin[i['id']] = i
+    
+    info_ciu = defaultdict(dict)
+
+    for x in lt.iterator(info_lt):
+        of = fin[x["id"]]
+        ciudad = of["city"]
+        pais = of["country_code"]
+        empresa = of["company_name"]
+        if x["salary_from"] == "" or x["salary_to"] == "":
+            sal_min = 0
+            sal_max = 0
+        else:
+            sal_min = int(x["salary_from"])
+            sal_max = int(x["salary_to"])
+
+        if "total_ofertas" not in info_ciu[ciudad]:
+            info_ciu[ciudad]["total_ofertas"] = 0
+            info_ciu[ciudad]["salario"] = []
+            info_ciu[ciudad]["cant_empresas"] = defaultdict(int)
+            info_ciu[ciudad]["pais"] = pais
+        elif info_ciu[ciudad]["pais"] != pais:
+            info_ciu[ciudad]["pais"] = pais
+
+        info_ciu[ciudad]["total_ofertas"] += 1
+        info_ciu[ciudad]["salario"].extend([sal_min, sal_max])
+        info_ciu[ciudad]["cant_empresas"][empresa] += 1
+
+
+    for q, k in info_ciu.items():
+        salarios = k["salario"]
+        salario_promedio = sum(salarios) / len(salarios)
+        k['salario_promedio'] = salario_promedio
+
+
+    for q, k in info_ciu.items():
+        empresa_mas_ofertas = max(k["cant_empresas"], key=k["cant_empresas"].get)
+        cantidad_ofertas_empresa_mas = k["cant_empresas"][empresa_mas_ofertas]
+        k['empresa_mas_ofertas'] = empresa_mas_ofertas
+        k['cantidad_ofertas_empresa_mas'] = cantidad_ofertas_empresa_mas
+
+    for q, k in info_ciu.items():
+        salarios = k["salario"]
+        mejor_oferta = max(salarios)
+        peor_oferta = min(salarios)
+        k['mejor_oferta'] = mejor_oferta
+        k['peor_oferta'] = peor_oferta
+
+    finalissima = lt.newList("ARRAY_LIST")
+    for ciudad, info in info_ciu.items():
+        lt.addLast(finalissima, {'ciudad': ciudad,
+                          'pais': info['pais'],
+                          'total_ofertas': info['total_ofertas'],
+                          'salario_promedio': info['salario_promedio'],
+                          "cant_empresas": len(info["cant_empresas"]),
+                          'empresa_mas_ofertas': info['empresa_mas_ofertas'],
+                          'cantidad_ofertas_empresa_mas': info['cantidad_ofertas_empresa_mas'],
+                          'mejor_oferta': info['mejor_oferta'],
+                          'peor_oferta': info['peor_oferta']})
+
+    
+    #print(finalissima)
+    return finalissima
 
 
 def req_7(data_structs):
@@ -514,6 +742,21 @@ def sort_r3(oferta1, oferta2):
     if date1 > date2:
         return True
     elif date1 == date2:
+        if name1 < name2:
+            return True
+        else:
+            return False
+    else:
+        return False
+
+def sort_r6(oferta1, oferta2):
+    cant_of1 = int(oferta1['total_ofertas'])
+    cant_of2 = int(oferta2['total_ofertas'])
+    name1 = oferta1['ciudad']
+    name2 = oferta2['ciudad']
+    if cant_of1 > cant_of2:
+        return True
+    elif cant_of1 == cant_of2:
         if name1 < name2:
             return True
         else:
