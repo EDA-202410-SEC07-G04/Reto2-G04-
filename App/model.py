@@ -61,10 +61,12 @@ def new_data_structs():
                'multilocations': None,
                'skills': None}
 
-    catalog['jobs'] = mp.newMap(203562,
-                                   maptype='CHAINING',
-                                   loadfactor=0.9)
+    catalog['jobs'] = lt.newList("ARRAY_LIST")
 
+    """catalog['jobs'] = mp.newMap(203562,
+                                   maptype='CHAINING',
+                                   loadfactor=0.9)"""
+    
     catalog['countries'] = mp.newMap(203562,
                                    maptype='CHAINING',
                                    loadfactor=0.9)
@@ -98,7 +100,44 @@ def new_data_structs():
                                   maptype='CHAINING',
                                   loadfactor=0.99)
     """
+    
     return catalog
+
+
+#Funciones carga de datos
+
+def get_jobs_sublist(data_structs):
+
+    ofertas = data_structs["jobs"]
+    lista1 = lt.newList("ARRAY_LIST")
+    lista0 = lt.newList("ARRAY_LIST")
+    sublista1=lt.subList(ofertas,1,3)
+    sublista2= lt.subList(ofertas,lt.size(ofertas)-2,3)
+    for cada_elem in lt.iterator(sublista1):
+       
+       dict0 = {}
+       dict0["title"] = cada_elem["title"]
+       dict0["published_at"] = cada_elem["published_at"]
+       dict0["company_name"] = cada_elem["company_name"]
+       dict0["experience_level"] = cada_elem["experience_level"]
+       dict0["country_code"] = cada_elem["country_code"]
+       dict0["city"] = cada_elem["city"]
+       lt.addLast(lista0,dict0)
+    for elem in lt.iterator(sublista2):
+       
+       dict1 = {}
+       dict1["title"] = elem["title"]
+       dict1["published_at"] = elem["published_at"]
+       dict1["company_name"] = elem["company_name"]
+       dict1["experience_level"] = elem["experience_level"]
+       dict1["country_code"] = elem["country_code"]
+       dict1["city"] = elem["city"]
+       lt.addLast(lista1, dict1)
+       
+   
+       
+    return lista1, lista0
+
 
 # Funciones para agregar informacion al modelo
 
@@ -116,6 +155,11 @@ def newId(pubid):
     return entry
 
 def addJob(catalog, job):
+    jobi = catalog['jobs']
+    lt.addLast(jobi, job)
+    return catalog
+
+"""def addJob(catalog, job):
     try:
         jobs = catalog['jobs']
         if (job['id'] != ''):
@@ -132,7 +176,7 @@ def addJob(catalog, job):
             mp.put(jobs, pubid, ide)
         lt.addLast(ide['jobs'], job)
     except Exception:
-        return None
+        return None"""
 
 def newCountrycode(pubccode):
     entry = {'Countrycode': "", "jobs": None}
@@ -347,12 +391,32 @@ def req_1(data_structs, n_ofertas, cod_pais, xp):
     return final, cant_xp, cant_of_pais
 
 
-def req_2(data_structs):
+def req_2(data_structs, num_ofertas, empresa, ciudad):
     """
     Función que soluciona el requerimiento 2
     """
     # TODO: Realizar el requerimiento 2
-    pass
+    filtro = lt.newList('ARRAY_LIST')
+    company = mp.get(data_structs["companies"], empresa)
+
+    if company:
+        valores = me.getValue(company)["jobs"]
+        for job in lt.iterator(valores):
+            if ciudad.lower() == job["city"].lower():
+                lt.addLast(filtro, job)
+
+    tamanho = lt.size(filtro)
+    if tamanho == 0:
+        print("Ningun resultado encontrado")
+        sys.exit(0)
+    elif num_ofertas > lt.size(filtro):
+        num_ofertas = lt.size(filtro)
+    elif num_ofertas <= lt.size(filtro):
+        num_ofertas = num_ofertas 
+    
+    sublista = lt.subList(filtro, 0, num_ofertas)
+
+    return sublista, tamanho
 
 
 def req_3(data_structs, nom_empresa, fecha_inicial_consulta, fecha_final_consulta):

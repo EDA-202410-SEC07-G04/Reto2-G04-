@@ -29,6 +29,7 @@ from DISClib.ADT import stack as st
 from DISClib.ADT import queue as qu
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
+from tabulate import tabulate
 assert cf
 #from tabulate import tabulate
 import traceback
@@ -86,7 +87,10 @@ def load_data(control):
     size = mp.size(control["model"]["jobs"])
     #print(control["model"]["companies"])
     print(size)
-    print(printLoadDataAnswer(respuesta))
+    lista = controller.get_jobs_sublist(control)
+    print(lista)
+    print(tabulate(list(lt.iterator(lista[0]))+list(lt.iterator(lista[1])), headers="keys", tablefmt="grid"))
+
     
 
 
@@ -105,7 +109,7 @@ def print_req_1(control):
     n_ofertas = int(input("Digame la cantidad de ofertas que desea ver: "))
     cod_pais = str(input("Digame el pais del cual desea consultar ofertas: "))
     xp = str(input("Digame el nivel de experiencia que le interesa: "))
-    final, cant_xp, cant_of_pais = controller.req_1(control, n_ofertas, cod_pais.lower(), xp)
+    final, cant_xp, cant_of_pais, deltaTime = controller.req_1(control, n_ofertas, cod_pais.lower(), xp)
     print("            ")
     print("El total de ofertas en ese pais: " + str(cant_of_pais))
     print("El total de ofertas por el nivel de experiencia en ese pais: " + str(cant_xp))
@@ -135,14 +139,49 @@ def print_req_1(control):
             job['city'] + " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + 
             ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
             i += 1
-
+    DeltaTime = f"{deltaTime:.3f}"
+    print("Para este req el tiempo es:", str(DeltaTime), "[ms]")
 
 def print_req_2(control):
     """
         Función que imprime la solución del Requerimiento 2 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 2
-    pass
+    num_ofertas = int(input("Cantidad de ofertas que desea ver: "))
+    empresa = str(input("Empresa de la cual desea consultar las ofertas: "))
+    ciudad = str(input("Ciudad de la cual desea ver las ofertas: "))
+
+    sublista, tamanho, deltaTime = controller.req_2(control, num_ofertas, empresa.lower(), ciudad.lower())
+    size = tamanho
+    print("            ")
+    print("El total de ofertas en esta empresa y ciudad es : " + str(tamanho))
+    sample = size
+    if size == 1:
+        job = lt.getElement(sublista, 0)
+        print("Los", num_ofertas, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  
+            ' Nombre de la compañia: ' + job['company_name'] + ' Nivel de XP: ' + job['experience_level'] + " Pais: " + job["country_code"] + ' Ciudad: ' + 
+            job['city'] + " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + 
+            ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
+    elif size <= sample*2:
+        print("Los", num_ofertas, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        for job in lt.iterator(sublista):
+            print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  
+            ' Nombre de la compañia: ' + job['company_name'] + ' Nivel de XP: ' + job['experience_level'] + " Pais: " + job["country_code"] + ' Ciudad: ' + 
+            job['city'] + " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + 
+            ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
+    else:
+        print("Los", num_ofertas, "Trabajos ordenados por fecha (mas reciente a menos reciente) son:")
+        i = 1
+        while i <= sample:
+            job = lt.getElement(sublista, i)
+            print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  
+            ' Nombre de la compañia: ' + job['company_name'] + ' Nivel de XP: ' + job['experience_level'] + " Pais: " + job["country_code"] + ' Ciudad: ' + 
+            job['city'] + " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + 
+            ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
+            i += 1
+    DeltaTime = f"{deltaTime:.3f}"
+    print("Para este req el tiempo es:", str(DeltaTime), "[ms]")
 
 
 def print_req_3(control):
@@ -154,7 +193,7 @@ def print_req_3(control):
     fecha_inicial_consulta =  str(input("Que fecha minima le interesa?: "))
     fecha_final_consulta = str(input("Que fecha maxima le interesa?: "))
 
-    sortiao, cant_of, cant_xp_jr, cant_xp_m, cant_xp_sr = controller.req_3(control, nom_empresa.lower(), fecha_inicial_consulta, fecha_final_consulta)
+    sortiao, cant_of, cant_xp_jr, cant_xp_m, cant_xp_sr, deltaTime  = controller.req_3(control, nom_empresa.lower(), fecha_inicial_consulta, fecha_final_consulta)
     print("            ")
     print("Numero total de ofertas: " + str(cant_of))
     print("Numero de ofertas con xp Junior: " + str(cant_xp_jr))
@@ -186,7 +225,8 @@ def print_req_3(control):
             job['city'] + " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + 
             ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
             i += 1
-
+    DeltaTime = f"{deltaTime:.3f}"
+    print("Para este req el tiempo es:", str(DeltaTime), "[ms]")
 
 def print_req_4(control):
     """
@@ -203,7 +243,7 @@ def print_req_4(control):
     fecha_final_consulta = str(input("Que fecha maxima le interesa?: "))
     
 
-    final, cantidad = controller.req_4(control, cod_pais.lower(), fecha_inicial_consulta, fecha_final_consulta)
+    final, cantidad, deltaTime = controller.req_4(control, cod_pais.lower(), fecha_inicial_consulta, fecha_final_consulta)
     for i in lt.iterator(final):
         ciudades.append(i["city"])
         if lt.isPresent(messi, i["company_name"]) == 0:
@@ -246,7 +286,8 @@ def print_req_4(control):
         ' Ciudad: ' + job['city'] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'] + ' Remoto?: ' + job['remote_interview'] + 
         ' Contratan Ucranianos?: ' + job['open_to_hire_ukrainians'])
             i += 1
-
+    DeltaTime = f"{deltaTime:.3f}"
+    print("Para este req el tiempo es:", str(DeltaTime), "[ms]")
 
 def print_req_5(control):
     """
@@ -261,7 +302,7 @@ def print_req_5(control):
     fecha_inicial_consulta =  str(input("Que fecha minima le interesa?: "))
     fecha_final_consulta = str(input("Que fecha maxima le interesa?: "))
 
-    final, cantidad = controller.req_5(control, nom_ciudad.lower(), fecha_inicial_consulta, fecha_final_consulta)
+    final, cantidad, deltaTime = controller.req_5(control, nom_ciudad.lower(), fecha_inicial_consulta, fecha_final_consulta)
     for i in lt.iterator(final):
         empresas.append(i["company_name"])
         if lt.isPresent(messi, i["company_name"]) == 0:
@@ -300,7 +341,8 @@ def print_req_5(control):
             print('Fecha de publicacion: ' + job["published_at"] + ' Titulo: ' + job['title'] +  ' Nombre de la compañia: ' + job['company_name'] +
             " Tamaño de la empresa: " + job["company_size"] + ' Tipo de ubicacion de trabajo: ' + job['workplace_type'])
             i += 1
-
+    DeltaTime = f"{deltaTime:.3f}"
+    print("Para este req el tiempo es:", str(DeltaTime), "[ms]")
 
 def print_req_6(control):
     """
@@ -388,10 +430,10 @@ if __name__ == "__main__":
         print_menu()
         inputs = input('Seleccione una opción para continuar\n')
         if int(inputs) == 1:
-            mem = True
+            #mem = True
             print("Cargando información de los archivos ....\n")
             load_data(control)
-            #answer = controller.load_data(control, memflag=mem)
+            #answer = controller.load_data(control)
             #printLoadDataAnswer(answer)
 
         elif int(inputs) == 2:
