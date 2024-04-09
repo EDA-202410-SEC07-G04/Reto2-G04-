@@ -87,9 +87,12 @@ def load_data(control):
     size = mp.size(control["model"]["jobs"])
     #print(control["model"]["companies"])
     print(size)
+
+    """
     lista = controller.get_jobs_sublist(control)
     print(lista)
     print(tabulate(list(lt.iterator(lista[0]))+list(lt.iterator(lista[1])), headers="keys", tablefmt="grid"))
+    """
 
     
 

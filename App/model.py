@@ -406,12 +406,19 @@ def req_2(data_structs, num_ofertas, empresa, ciudad):
                 lt.addLast(filtro, job)
 
     tamanho = lt.size(filtro)
-    if tamanho == 0:
+
+    if lt.isEmpty(filtro):
         print("Ningun resultado encontrado")
         sys.exit(0)
-    elif num_ofertas > lt.size(filtro):
-        num_ofertas = lt.size(filtro)
-    elif num_ofertas <= lt.size(filtro):
+    elif lt.size(filtro) >= 2:
+        sortiao = merg.sort(filtro, sort_r3)
+    elif lt.size(filtro) <= 1:
+        sortiao = filtro 
+
+
+    elif num_ofertas > lt.size(sortiao):
+        num_ofertas = lt.size(sortiao)
+    elif num_ofertas <= lt.size(sortiao):
         num_ofertas = num_ofertas 
     
     sublista = lt.subList(filtro, 0, num_ofertas)
