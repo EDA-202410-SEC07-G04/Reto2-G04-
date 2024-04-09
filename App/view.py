@@ -29,9 +29,8 @@ from DISClib.ADT import stack as st
 from DISClib.ADT import queue as qu
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
-from tabulate import tabulate
-assert cf
 #from tabulate import tabulate
+assert cf
 import traceback
 
 """
@@ -84,9 +83,12 @@ def load_data(control):
     """
     #TODO: Realizar la carga de datos
     respuesta = controller.load_data(control)
+    print(" Termino load data ")
     size = mp.size(control["model"]["jobs"])
-    #print(control["model"]["companies"])
     print(size)
+    messi = mp.size(control["model"]["years"])
+    print(messi)
+    #print(control["model"]["companies"])
 
     """
     lista = controller.get_jobs_sublist(control)

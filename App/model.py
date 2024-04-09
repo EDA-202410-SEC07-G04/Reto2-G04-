@@ -284,16 +284,29 @@ def newYear(pubyear):
     entry["jobs"] = lt.newList("SINGLE_LINKED")
     return entry
 
+def convercioni(pubyear):
+    #pubyear = str(pubyear)
+    """
+    if len(pubyear) == 4:
+        messi = pubyear
+    else:
+    """
+    fecha = dt.strptime(pubyear, '%Y-%m-%dT%H:%M:%S.%fZ')
+        # messi = ano.strftime("%Y")
+    aNio = fecha.year
+
+    #fecha_diccionario = dt.strptime(i["published_at"], '%Y-%m-%dT%H:%M:%S.%fZ')
+    #fecha_diccionario_dt = fecha_diccionario.strftime("%Y")
+    return aNio
+
 def addYear(catalog, job):
     try:
         years = catalog['years']
         if (job["published_at"] != ''):
-            ano = dt.strptime(job["published_at"], '%Y-%m-%dT%H:%M:%S.%fZ')
-            anono = fecha_diccionario.strftime("%Y")
-            pubyear = anono
-            pubyear = int(float(pubyear))
+            pubyear = convercioni(job["published_at"])
+            pubyear = (str(pubyear))
         else:
-            pubyear = 2020
+            pubyear = "2020"
         existyear = mp.contains(years, pubyear)
         if existyear:
             entry = mp.get(years, pubyear)
@@ -377,15 +390,12 @@ def req_1(data_structs, n_ofertas, cod_pais, xp):
     elif lt.size(lt1) <= 1:
         sortiao = lt1 
 
-
     if n_ofertas > lt.size(sortiao):
         n_ofertas = lt.size(sortiao)
     elif n_ofertas <= lt.size(sortiao):
         n_ofertas = n_ofertas 
 
-
     final = lt.subList(sortiao, 1, n_ofertas)
-
     cant_xp = lt.size(lt1)
 
     return final, cant_xp, cant_of_pais
@@ -549,18 +559,12 @@ def req_6(data_structs, cant_ciu, xp, ano):
     Función que soluciona el requerimiento 6
     """
     # TODO: Realizar el requerimiento 6
-    ano_fi = str(dt.strptime(ano, "%Y"))
+    ano_fi = ano
     info_lt = lt.newList("ARRAY_LIST")
     chili = lt.newList("ARRAY_LIST")
-    print(data_structs["years"])
     
-
-    if xp == "indiferente":
-        ltjr = lt.newList("ARRAY_LIST")
-        ltm = lt.newList("ARRAY_LIST")
-        ltsr = lt.newList("ARRAY_LIST")
+    if xp != "junior" or xp != "mid" or xp != "senior":
         res = mp.get(data_structs['years'], ano_fi)
-        print(res)
         if res:
             var1 = me.getValue(res)["jobs"]
             for i in lt.iterator(var1):
