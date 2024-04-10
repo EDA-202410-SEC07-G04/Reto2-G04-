@@ -691,11 +691,58 @@ def req64(lst, info_lt):
     return finalissima
 
 
-def req_7(data_structs):
+def req_7(data_structs, num_ofertas, anho, mes):
     """
     Función que soluciona el requerimiento 7
     """
     # TODO: Realizar el requerimiento 7
+
+    list_mes = lt.newList("ARRAY_LIST")
+    ides = lt.newList("ARRAY_LIST")
+    #sacar del mapa years los trabajos que cumplen con el año y el mes
+    anio = str(dt.strptime(anho, "%Y"))
+    mess = str(dt.strptime(mes, "%m"))
+
+
+    filt_anho = mp.get(data_structs["years"], anio)
+
+    if filt_anho:
+        var1 = me.getValue(filt_anho)["jobs"]
+
+        for i in lt.iterator(var1):
+            if i[mess] == mes:
+                lt.addLast(list_mes, i) #lista de las ofertas que funcionan
+
+            #obtener el id de cada oferta posible
+            ide_info = i["id"]
+            info = lt.getElement(list_mes, ide_info)
+            lt.addLast(ides, info) #ides de las ofertas que funcionan
+
+
+    num = 0
+    
+    for ofertas in range(len(list_mes)):
+        todos_paises = {"country": ofertas["country_code"], 
+                        "numero_ofertas": num, 
+                        "empresa":ofertas["company_name"]}
+
+        if ofertas["country_code"] in todos_paises["country"]:
+            num +=1
+        else:
+            todos_paises["country"] = ofertas["country_code"]
+        #retorna un diccionario con la lista de los paises y cuantas ofertas tiene cada uno
+
+    #hacer un sorted 
+
+    if lt.size(list_mes) >= 2:
+        sortiao = merg.sort(list_mes, sortr7)
+    elif lt.size(list_mes) <= 1:
+        sortiao = list_mes
+    if lt.isEmpty(list_mes):
+        print("Ningun resultado encontrado")
+        sys.exit(0)
+
+
     pass
 
 
@@ -770,6 +817,28 @@ def sort_r6(oferta1, oferta2):
             return False
     else:
         return False
+
+def sortr7(diccionario):
+    num_ofertas = diccionario["numero_ofertas"]
+    mayor = 0
+    
+    for i in range(len(diccionario)):
+        name1 = i["empresa"]
+        name2 = i+1["empresa"]
+
+    if num_ofertas > mayor:
+        mayor = num_ofertas
+        #mayor_cod = diccionario["country"]
+        return True
+    elif num_ofertas == mayor:
+        if name1 < name2:
+            return True
+        else:
+            return False
+    else:
+        return False
+
+        
 
 def compareDate():
     pass
