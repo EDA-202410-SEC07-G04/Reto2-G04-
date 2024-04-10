@@ -77,7 +77,7 @@ def subi(control):
 def load_jobs(control):
     #"80-por-jobs.csv"
     #'large-jobs.csv'
-    jobsfile = cf.data_dir + "10-por-jobs.csv"
+    jobsfile = cf.data_dir + 'large-jobs.csv'
     input_file = csv.DictReader(open(jobsfile, encoding='utf-8'), delimiter=';')
     for job in input_file:
         model.addJob(control['model'], job)
@@ -88,6 +88,8 @@ def load_jobs(control):
         model.addYear(control['model'], job)
 
 def load_info(control):
+    #'large-employments_types.csv'
+    # "10-por-employments_types.csv"
     jobsfile = cf.data_dir + 'large-employments_types.csv'
     input_file = csv.DictReader(open(jobsfile, encoding='utf-8'), delimiter=';')
     for info in input_file:
@@ -180,8 +182,11 @@ def req_6(control, cant_ciu, xp, ano):
     Retorna el resultado del requerimiento 6
     """
     # TODO: Modificar el requerimiento 6
+    start_time = get_time()
     final, cantc, messi, cant_empresas = model.req_6(control["model"], cant_ciu, xp, ano) 
-    return final, cantc, messi, cant_empresas
+    end_time = get_time()
+    deltaTime = delta_time(start_time, end_time)
+    return final, cantc, messi, cant_empresas, deltaTime
 
 
 def req_7(control):

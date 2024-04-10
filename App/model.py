@@ -426,12 +426,12 @@ def req_2(data_structs, num_ofertas, empresa, ciudad):
         sortiao = filtro 
 
 
-    elif num_ofertas > lt.size(sortiao):
+    if num_ofertas > lt.size(sortiao):
         num_ofertas = lt.size(sortiao)
     elif num_ofertas <= lt.size(sortiao):
         num_ofertas = num_ofertas 
     
-    sublista = lt.subList(filtro, 0, num_ofertas)
+    sublista = lt.subList(sortiao, 1, num_ofertas)
 
     return sublista, tamanho
 
@@ -563,7 +563,7 @@ def req_6(data_structs, cant_ciu, xp, ano):
     info_lt = lt.newList("ARRAY_LIST")
     chili = lt.newList("ARRAY_LIST")
     
-    if xp != "junior" or xp != "mid" or xp != "senior":
+    if xp == "indiferente":
         res = mp.get(data_structs['years'], ano_fi)
         if res:
             var1 = me.getValue(res)["jobs"]
@@ -631,7 +631,7 @@ def req64(lst, info_lt):
     fin = {}
     for i in lt.iterator(lst):
         fin[i['id']] = i
-    
+
     info_ciu = defaultdict(dict)
 
     for x in lt.iterator(info_lt):
@@ -658,12 +658,10 @@ def req64(lst, info_lt):
         info_ciu[ciudad]["salario"].extend([sal_min, sal_max])
         info_ciu[ciudad]["cant_empresas"][empresa] += 1
 
-
     for q, k in info_ciu.items():
         salarios = k["salario"]
         salario_promedio = sum(salarios) / len(salarios)
         k['salario_promedio'] = salario_promedio
-
 
     for q, k in info_ciu.items():
         empresa_mas_ofertas = max(k["cant_empresas"], key=k["cant_empresas"].get)
@@ -690,8 +688,6 @@ def req64(lst, info_lt):
                           'mejor_oferta': info['mejor_oferta'],
                           'peor_oferta': info['peor_oferta']})
 
-    
-    #print(finalissima)
     return finalissima
 
 
