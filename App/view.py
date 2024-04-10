@@ -356,7 +356,7 @@ def print_req_6(control):
     xp = str(input("Digame el nivel de experiencia que le interesa (en caso de no estar interesado en uno en especifico escriba indiferente): "))
     ano = str(input("Digame el año que le interesa(XXXX): "))
 
-    final, cantc, messi, cant_empresas = controller.req_6(control, cant_ciu, xp.lower(), ano)
+    final, cantc, messi, cant_empresas, deltaTime = controller.req_6(control, cant_ciu, xp.lower(), ano)
 
     ciu_may = lt.getElement(final, 1)
     #print(ciu_may)
@@ -398,7 +398,8 @@ def print_req_6(control):
             ' empresa con mas ofertas en esa ciudad: ' + job['empresa_mas_ofertas'] + ' conteo: ' + str(job['cantidad_ofertas_empresa_mas']) + 
             ' mejor oferta en la ciudad: ' + str(job['mejor_oferta']) + ' peor oferta en la ciudad: ' + str(job['peor_oferta']))
             i += 1
-    
+    DeltaTime = f"{deltaTime:.3f}"
+    print("Para este req el tiempo es:", str(DeltaTime), "[ms]")
 
 
 def print_req_7(control):
